@@ -303,7 +303,7 @@ class BagsWorldStoreManager {
     const master = this.getMasterProducts();
     const storeProducts = store && Array.isArray(store.products) ? store.products : [];
 
-    return master.map(mp => {
+    return master.filter(mp => mp.active !== false).map(mp => {
       const sp = storeProducts.find(p => p.productId === mp.id);
       const isActive = sp ? sp.active !== false : true;
       const customPrice = sp && sp.customPrice ? sp.customPrice : mp.suggestedRetailPrice;
@@ -389,6 +389,7 @@ class BagsWorldStoreManager {
       colorways: newProduct.colorways || [
         { name: "Negro Ónix", image: newProduct.image || "assets/images/bags/tote_horse_charm_cream.jpg", sku: "BW-BLK" }
       ],
+      active: newProduct.active !== undefined ? Boolean(newProduct.active) : true,
       wholesalePrice: parseInt(newProduct.wholesalePrice || "68000", 10),
       suggestedRetailPrice: parseInt(newProduct.suggestedRetailPrice || "125000", 10),
       supplierId: "sup-001",
@@ -530,6 +531,36 @@ ${modeText}
   }
 
   
+  
+  toggleMasterProductActive(productId) {
+    const products = this.getMasterProducts();
+    const prod = products.find(p => p.id === productId);
+    if (!prod) return null;
+
+    // Si prod.active es undefined o true, pasa a false. Si es false, pasa a true.
+    prod.active = prod.active === false ? true : false;
+    prod.updatedAt = new Date().toISOString().split("T")[0];
+
+    this.saveMasterProducts(products);
+    return prod.active;
+  }
+
+  deleteMasterProduct(productId) {
+    let products = this.getMasterProducts();
+    products = products.filter(p => p.id !== productId);
+    this.saveMasterProducts(products);
+
+    // Limpiar de las configuraciones de tiendas boutique
+    const stores = this.getStores();
+    stores.forEach(s => {
+      if (Array.isArray(s.products)) {
+        s.products = s.products.filter(p => p.productId !== productId);
+      }
+    });
+    this.saveStores(stores);
+    return true;
+  }
+
   updateMasterProduct(productId, updates) {
     const master = this.getMasterProducts();
     const prod = master.find(p => p.id === productId);
@@ -542,6 +573,9 @@ ${modeText}
     if (updates.campaignBadge !== undefined) prod.campaignBadge = updates.campaignBadge;
     if (updates.dimensions) prod.dimensions = updates.dimensions;
     if (updates.description) prod.description = updates.description;
+    if (updates.active !== undefined) prod.active = Boolean(updates.active);
+    if (updates.image) prod.image = updates.image;
+    if (updates.tagline) prod.tagline = updates.tagline;
 
     this.saveMasterProducts(master);
     return prod;

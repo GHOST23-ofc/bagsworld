@@ -1576,3 +1576,376 @@ input:checked + .slider-round:before {
   border-radius: 999px;
   box-shadow: 0 2px 8px rgba(230, 25, 46, 0.35);
 }
+
+
+/* ==========================================================================
+   SISTEMA DE 3 TEMAS INTERNOS (LLAMATIVOS, MODERNOS Y COOL)
+   ========================================================================== */
+
+/* TEMA 1: Obsidian & Royal Gold (Predeterminado - Alta Marroquinería de Lujo) */
+[data-theme="obsidian-gold"], :root {
+  --bg-main: #06070a;
+  --bg-surface: #0e1117;
+  --bg-surface-elevated: #151922;
+  --bg-glass: rgba(14, 17, 23, 0.88);
+  --border-subtle: rgba(227, 194, 116, 0.22);
+  --border-accent: rgba(230, 25, 46, 0.45);
+  
+  --primary-red: #e6192e;
+  --primary-red-hover: #ff2a40;
+  --primary-red-glow: rgba(230, 25, 46, 0.35);
+  
+  --primary-gold: #e3c274;
+  --primary-gold-hover: #f5eccd;
+  --primary-gold-glow: rgba(227, 194, 116, 0.3);
+  
+  --accent-blue: #38bdf8;
+  --accent-emerald: #10b981;
+  --accent-purple: #a855f7;
+  --theme-dot-color: rgba(227, 194, 116, 0.45);
+  --theme-radial-glow: rgba(230, 25, 46, 0.12);
+  --theme-name: "👑 Obsidian Gold";
+}
+
+/* TEMA 2: Cyber Velvet & Neon Rose (Vanguardista, Neón Eléctrico y Street Luxury) */
+[data-theme="cyber-velvet"] {
+  --bg-main: #090614;
+  --bg-surface: #110c26;
+  --bg-surface-elevated: #1a1338;
+  --bg-glass: rgba(17, 12, 38, 0.90);
+  --border-subtle: rgba(255, 42, 133, 0.30);
+  --border-accent: rgba(0, 240, 255, 0.55);
+  
+  --primary-red: #ff2a85; /* Rosa Neón Eléctrico */
+  --primary-red-hover: #ff55a3;
+  --primary-red-glow: rgba(255, 42, 133, 0.45);
+  
+  --primary-gold: #00f0ff; /* Cyan Luminoso Eléctrico */
+  --primary-gold-hover: #66f6ff;
+  --primary-gold-glow: rgba(0, 240, 255, 0.4);
+  
+  --accent-blue: #00f0ff;
+  --accent-emerald: #10b981;
+  --accent-purple: #bd00ff;
+  --theme-dot-color: rgba(0, 240, 255, 0.45);
+  --theme-radial-glow: rgba(255, 42, 133, 0.16);
+  --theme-name: "⚡ Cyber Velvet";
+}
+
+/* TEMA 3: Emerald Mirage & Royal Mint (Verde Esmeralda Colombiana & Menta Glow) */
+[data-theme="emerald-mirage"] {
+  --bg-main: #030d09;
+  --bg-surface: #071912;
+  --bg-surface-elevated: #0d281d;
+  --bg-glass: rgba(7, 25, 18, 0.90);
+  --border-subtle: rgba(5, 255, 161, 0.28);
+  --border-accent: rgba(245, 158, 11, 0.55);
+  
+  --primary-red: #05ffa1; /* Menta Neón Radiante */
+  --primary-red-hover: #50ffbe;
+  --primary-red-glow: rgba(5, 255, 161, 0.45);
+  
+  --primary-gold: #f59e0b; /* Oro Ámbar Imperial */
+  --primary-gold-hover: #fbbf24;
+  --primary-gold-glow: rgba(245, 158, 11, 0.35);
+  
+  --accent-blue: #06b6d4;
+  --accent-emerald: #05ffa1;
+  --accent-purple: #10b981;
+  --theme-dot-color: rgba(5, 255, 161, 0.45);
+  --theme-radial-glow: rgba(5, 255, 161, 0.14);
+  --theme-name: "🌿 Emerald Mirage";
+}
+
+/* Selector de Tema UI */
+.theme-selector-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-subtle);
+  transition: all 0.2s ease;
+}
+.theme-selector-wrapper:hover {
+  border-color: var(--primary-gold);
+}
+.theme-selector-select {
+  background: transparent;
+  color: #ffffff;
+  border: none;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+}
+.theme-selector-select option {
+  background: #0b0f19;
+  color: #ffffff;
+}
+
+/* Floating Quick Theme Toggle Button */
+.btn-floating-theme-switch {
+  position: fixed;
+  bottom: 84px;
+  right: 20px;
+  z-index: 9980;
+  background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.55);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.btn-floating-theme-switch:hover {
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.7), 0 0 16px var(--primary-gold-glow);
+}
+
+/* =========================================================================
+   EMPLEADO DIGITAL 24/7 (SISTEMA IA DE ATENCIÓN Y VENTAS DE BOLSOS)
+   ========================================================================= */
+.floating-empleado-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9985;
+  background: linear-gradient(135deg, #090d16 0%, #1e293b 100%);
+  color: #ffffff;
+  border: 1.5px solid var(--border-accent);
+  border-radius: 999px;
+  padding: 8px 16px 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px var(--primary-red-glow);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.floating-empleado-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: var(--primary-red);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 24px var(--primary-red-glow);
+}
+
+.bot-avatar-badge {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(230, 25, 46, 0.15);
+  border: 1.5px solid var(--primary-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.bot-online-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 2px solid #090d16;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.bot-label-pill {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.bot-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.bot-status {
+  font-size: 10px;
+  color: #4ade80;
+  font-weight: 600;
+}
+
+/* Chat container inside modal */
+.empleado-chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 480px;
+  max-height: 70vh;
+}
+
+.empleado-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #090d16;
+}
+
+.chat-msg {
+  display: flex;
+  gap: 10px;
+  max-width: 88%;
+  animation: fadeInMsg 0.2s ease-out;
+}
+
+@keyframes fadeInMsg {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-msg.bot {
+  align-self: flex-start;
+}
+
+.chat-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chat-msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1e293b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-subtle);
+}
+
+.chat-msg.user .chat-msg-avatar {
+  background: var(--primary-red);
+}
+
+.chat-msg-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.chat-msg.bot .chat-msg-bubble {
+  background: #141a26;
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top-left-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.chat-msg.user .chat-msg-bubble {
+  background: var(--bg-surface-elevated);
+  color: #ffffff;
+  border: 1px solid var(--primary-gold);
+  border-top-right-radius: 4px;
+}
+
+.empleado-quick-actions {
+  padding: 10px 14px;
+  background: #0e1117;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.quick-action-chip {
+  background: #1a2233;
+  border: 1px solid var(--border-subtle);
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.quick-action-chip:hover {
+  background: var(--primary-gold);
+  color: #000000;
+  border-color: var(--primary-gold);
+}
+
+.empleado-chat-input-bar {
+  padding: 12px 14px;
+  background: #0e1117;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.copier-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.copier-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px;
+  transition: all 0.2s;
+}
+
+.copier-card:hover {
+  border-color: var(--primary-gold);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 600px) {
+  .floating-empleado-btn {
+    bottom: 14px;
+    right: 12px;
+    padding: 6px 12px 6px 8px;
+    gap: 8px;
+  }
+  .btn-floating-theme-switch {
+    bottom: 74px;
+    right: 12px;
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+  .bot-avatar-badge {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+  .bot-title {
+    font-size: 10px;
+  }
+  .bot-status {
+    font-size: 9px;
+  }
+}

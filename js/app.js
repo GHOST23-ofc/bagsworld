@@ -47,10 +47,23 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAccountingReports();
     setupReturnExchangeModal();
 
+    // Sistema de 3 Temas Visuales
+    initThemeSystem();
+
+    // Empleado Digital 24/7 y Creador de Enlaces
+    setupEmpleadoDigital();
+    setupLinkCreatorModal();
+
     // Renderizar vista inicial
     renderCurrentView();
     updateFloatingCartBar();
     updateAuthHUD();
+
+    // Auto-abrir bolso si viene en el enlace por sticker de Instagram o chat
+    const paramProd = urlParams.get("prod");
+    if (paramProd) {
+      setTimeout(() => openProductModal(paramProd), 400);
+    }
   }
 
   // =========================================================================
@@ -135,6 +148,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (masterHud) masterHud.style.display = "none";
     if (clientHud) clientHud.style.display = "none";
+
+    // En la vitrina pública de cara al cliente final: 100% limpia sin barras administrativas
+    if (currentView === "storefront" && !paramDemo && !paramRole && !session.authenticated) {
+      return;
+    }
 
     if (isSuperAdmin) {
       if (masterHud) masterHud.style.display = "block";
@@ -720,6 +738,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tbody.innerHTML = masterProducts.map(mp => {
       const campaign = mp.campaignBadge || "";
+      const isActive = mp.active !== false;
       return `
         <tr>
           <td>
@@ -764,9 +783,22 @@ document.addEventListener("DOMContentLoaded", () => {
             </span>
           </td>
           <td>
-            <button type="button" class="btn-action-sm btn-save-single-master" data-prod-id="${mp.id}" style="font-size: 11px; padding: 5px 10px; font-weight: 700; color: #16a34a; border-color: #86efac; background: #f0fdf4;" title="Guardar Cambios">
-              💾 Guardar
+            <button type="button" class="btn-action-sm btn-toggle-master-active" data-prod-id="${mp.id}" data-prod-name="${mp.name}" style="font-size: 11px; padding: 5px 9px; font-weight: 800; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; ${isActive ? 'color: #15803d; background: #f0fdf4; border: 1px solid #86efac;' : 'color: #b45309; background: #fffbeb; border: 1px solid #fcd34d;'}" title="${isActive ? 'Referencia Habilitada. Clic para Pausar' : 'Referencia Inactiva. Clic para Habilitar'}">
+              <span>${isActive ? '🟢 Habilitada' : '⏸️ Inactiva'}</span>
             </button>
+          </td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" class="btn-action-sm btn-save-single-master" data-prod-id="${mp.id}" style="font-size: 11px; padding: 5px 8px; font-weight: 700; color: #16a34a; border-color: #86efac; background: #f0fdf4;" title="Guardar Cambios Rápidos">
+                💾 Guardar
+              </button>
+              <button type="button" class="btn-action-sm btn-edit-master-modal" data-prod-id="${mp.id}" style="font-size: 11px; padding: 5px 8px; font-weight: 700;" title="Editar Ficha Completa">
+                ✏️
+              </button>
+              <button type="button" class="btn-action-sm btn-delete-master-prod" data-prod-id="${mp.id}" data-prod-name="${mp.name}" style="font-size: 11px; padding: 5px 8px; font-weight: 700; color: #f87171; border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.1); cursor: pointer;" title="Eliminar Referencia">
+                🗑️
+              </button>
+            </div>
           </td>
         </tr>
       `;
@@ -812,6 +844,77 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("✅ Todos los precios y campañas guardados para la red BAGS WORLD.");
       };
     }
+
+    // Toggle Habilitada / Inactiva
+    tbody.querySelectorAll(".btn-toggle-master-active").forEach(btn => {
+      btn.onclick = () => {
+        const prodId = btn.dataset.prodId;
+        const prodName = btn.dataset.prodName || "esta referencia";
+        const newActiveState = db.toggleMasterProductActive(prodId);
+        renderSupplierAdmin();
+        if (newActiveState) {
+          showToast(`🟢 Referencia "${prodName}" habilitada. Visible nuevamente en vitrinas.`);
+        } else {
+          showToast(`⏸️ Referencia "${prodName}" inhabilitada. Pausada en vitrinas por stock agotado.`);
+        }
+      };
+    });
+
+    // Eliminar Referencia de Bodega
+    tbody.querySelectorAll(".btn-delete-master-prod").forEach(btn => {
+      btn.onclick = () => {
+        const prodId = btn.dataset.prodId;
+        const prodName = btn.dataset.prodName || "esta referencia";
+        if (confirm(`¿Estás seguro de eliminar permanentemente la referencia "${prodName}" de la bodega central?`)) {
+          db.deleteMasterProduct(prodId);
+          renderSupplierAdmin();
+          showToast(`🗑️ Referencia "${prodName}" eliminada de bodega.`);
+        }
+      };
+    });
+
+    // Editar Ficha Completa en Modal
+    tbody.querySelectorAll(".btn-edit-master-modal").forEach(btn => {
+      btn.onclick = () => {
+        const prodId = btn.dataset.prodId;
+        const prod = db.getMasterProducts().find(p => p.id === prodId);
+        if (!prod) return;
+
+        document.getElementById("new-prod-id").value = prod.id;
+        document.getElementById("new-prod-name").value = prod.name;
+        document.getElementById("new-prod-sku").value = prod.sku;
+        document.getElementById("new-prod-category").value = prod.category;
+        document.getElementById("new-prod-image").value = prod.image;
+        document.getElementById("new-prod-wholesale").value = prod.wholesalePrice;
+        document.getElementById("new-prod-suggested").value = prod.suggestedRetailPrice;
+        document.getElementById("new-prod-dim").value = prod.dimensions || "";
+        document.getElementById("new-prod-desc").value = prod.description || "";
+        
+        const statusSelect = document.getElementById("new-prod-status");
+        if (statusSelect) statusSelect.value = prod.active === false ? "inactive" : "active";
+        
+        const campaignSelect = document.getElementById("new-prod-campaign");
+        if (campaignSelect) campaignSelect.value = prod.campaignBadge || "";
+
+        const deleteBtnModal = document.getElementById("btn-delete-from-modal");
+        if (deleteBtnModal) {
+          deleteBtnModal.style.display = "inline-flex";
+          deleteBtnModal.onclick = () => {
+            if (confirm(`¿Eliminar permanentemente "${prod.name}"?`)) {
+              db.deleteMasterProduct(prod.id);
+              closeModal("modal-new-product");
+              renderSupplierAdmin();
+              showToast(`🗑️ Referencia "${prod.name}" eliminada.`);
+            }
+          };
+        }
+
+        const submitBtn = document.getElementById("btn-submit-master-form");
+        if (submitBtn) submitBtn.textContent = "💾 Guardar Cambios de la Referencia";
+
+        openModal("modal-new-product");
+      };
+    });
 
     // Renderizar Tabla de Pedidos B2B Entrantes
     renderSupplierOrdersTable();
@@ -1439,10 +1542,21 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Modal Cargar Producto Maestro
+    // Resetear modal de nuevo producto al abrir
     const btnOpenNewProd = document.getElementById("btn-open-new-product-modal");
     if (btnOpenNewProd) {
       btnOpenNewProd.addEventListener("click", () => {
+        const form = document.getElementById("form-new-master-product");
+        if (form) form.reset();
+        document.getElementById("new-prod-id").value = "";
+        const statusSelect = document.getElementById("new-prod-status");
+        if (statusSelect) statusSelect.value = "active";
+        const campaignSelect = document.getElementById("new-prod-campaign");
+        if (campaignSelect) campaignSelect.value = "";
+        const deleteBtnModal = document.getElementById("btn-delete-from-modal");
+        if (deleteBtnModal) deleteBtnModal.style.display = "none";
+        const submitBtn = document.getElementById("btn-submit-master-form");
+        if (submitBtn) submitBtn.textContent = "Publicar al Catálogo Maestro BAGS WORLD";
         openModal("modal-new-product");
       });
     }
@@ -1451,6 +1565,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (formNewProd) {
       formNewProd.addEventListener("submit", (e) => {
         e.preventDefault();
+        const prodId = document.getElementById("new-prod-id").value;
         const name = document.getElementById("new-prod-name").value;
         const sku = document.getElementById("new-prod-sku").value;
         const category = document.getElementById("new-prod-category").value;
@@ -1459,22 +1574,45 @@ document.addEventListener("DOMContentLoaded", () => {
         const suggested = document.getElementById("new-prod-suggested").value;
         const dimensions = document.getElementById("new-prod-dim").value;
         const desc = document.getElementById("new-prod-desc").value;
+        const statusVal = document.getElementById("new-prod-status")?.value;
+        const campaign = document.getElementById("new-prod-campaign")?.value || "";
+        const isActive = statusVal !== "inactive";
 
-        db.addMasterProduct({
-          name,
-          sku,
-          category,
-          image,
-          wholesalePrice: wholesale,
-          suggestedRetailPrice: suggested,
-          dimensions,
-          description: desc
-        });
+        if (prodId) {
+          // Edición
+          db.updateMasterProduct(prodId, {
+            name,
+            sku,
+            category,
+            image,
+            wholesalePrice: wholesale,
+            suggestedRetailPrice: suggested,
+            dimensions,
+            description: desc,
+            active: isActive,
+            campaignBadge: campaign
+          });
+          showToast(`✅ Referencia ${name} actualizada con éxito (${isActive ? 'Habilitada' : 'Pausada'}).`);
+        } else {
+          // Creación
+          db.addMasterProduct({
+            name,
+            sku,
+            category,
+            image,
+            wholesalePrice: wholesale,
+            suggestedRetailPrice: suggested,
+            dimensions,
+            description: desc,
+            active: isActive,
+            campaignBadge: campaign
+          });
+          showToast(`✨ Nueva referencia ${name} publicada al catálogo maestro.`);
+        }
 
         closeModal("modal-new-product");
         formNewProd.reset();
         renderSupplierAdmin();
-        showToast("✨ Nueva referencia publicada al catálogo maestro.");
       });
     }
 
@@ -2584,4 +2722,541 @@ ${itemsText}
         }, 300);
       }
     };
+  }
+
+
+  // =========================================================================
+  // SISTEMA DE 3 TEMAS INTERNOS (LLAMATIVOS, MODERNOS Y COOL)
+  // =========================================================================
+  const THEMES_CONFIG = {
+    "obsidian-gold": { name: "Obsidian Gold", icon: "👑" },
+    "cyber-velvet": { name: "Cyber Velvet", icon: "⚡" },
+    "emerald-mirage": { name: "Emerald Mirage", icon: "🌿" }
+  };
+
+  function initThemeSystem() {
+    const savedTheme = localStorage.getItem("bagsworld_theme") || "obsidian-gold";
+    applyTheme(savedTheme, false);
+
+    const selectMaster = document.getElementById("hud-theme-select-master");
+    const selectClient = document.getElementById("hud-theme-select-client");
+    const btnFloatingTheme = document.getElementById("btn-floating-theme");
+
+    if (selectMaster) {
+      selectMaster.value = savedTheme;
+      selectMaster.addEventListener("change", (e) => applyTheme(e.target.value, true));
+    }
+    if (selectClient) {
+      selectClient.value = savedTheme;
+      selectClient.addEventListener("change", (e) => applyTheme(e.target.value, true));
+    }
+
+    // Botón flotante que cicla entre los 3 temas
+    if (btnFloatingTheme) {
+      btnFloatingTheme.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "obsidian-gold";
+        const keys = Object.keys(THEMES_CONFIG);
+        const nextIdx = (keys.indexOf(current) + 1) % keys.length;
+        const nextTheme = keys[nextIdx];
+        applyTheme(nextTheme, true);
+      });
+    }
+  }
+
+  function applyTheme(themeId, notify = false) {
+    if (!THEMES_CONFIG[themeId]) themeId = "obsidian-gold";
+    document.documentElement.setAttribute("data-theme", themeId);
+    document.body.setAttribute("data-theme", themeId);
+    localStorage.setItem("bagsworld_theme", themeId);
+
+    const selectMaster = document.getElementById("hud-theme-select-master");
+    const selectClient = document.getElementById("hud-theme-select-client");
+    if (selectMaster) selectMaster.value = themeId;
+    if (selectClient) selectClient.value = themeId;
+
+    const iconEl = document.getElementById("floating-theme-icon");
+    const labelEl = document.getElementById("floating-theme-label");
+    if (iconEl) iconEl.textContent = THEMES_CONFIG[themeId].icon;
+    if (labelEl) labelEl.textContent = THEMES_CONFIG[themeId].name;
+
+    if (notify) {
+      showToast(`🎨 Tema visual activado: ${THEMES_CONFIG[themeId].icon} ${THEMES_CONFIG[themeId].name}`);
+    }
+  }
+
+  // =========================================================================
+  // EMPLEADO DIGITAL 24/7 (SISTEMA IA DE BOLSOS & MARROQUINERÍA)
+  // =========================================================================
+  function setupEmpleadoDigital() {
+    const btnFloating = document.getElementById("btn-floating-empleado");
+    const modalChat = document.getElementById("modal-empleado-chat");
+    const btnCloseChat = document.getElementById("btn-close-empleado-chat");
+    const chatForm = document.getElementById("form-empleado-chat");
+    const chatInput = document.getElementById("empleado-chat-input");
+    const chatMessages = document.getElementById("empleado-chat-messages");
+
+    const modalCopier = document.getElementById("modal-empleado-copier");
+    const btnCloseCopier = document.getElementById("btn-close-empleado-copier");
+    const btnOpenCopier = document.getElementById("btn-open-empleado-copier");
+    const btnOpenCopierPartner = document.getElementById("btn-open-empleado-copier-partner");
+    const btnOpenChatPreview = document.getElementById("btn-open-empleado-chat-preview");
+    const btnPartnerChatPreview = document.getElementById("btn-partner-chat-preview");
+
+    const tabSupplier = document.getElementById("tab-copier-supplier");
+    const tabPartner = document.getElementById("tab-copier-partner");
+    const contentSupplier = document.getElementById("copier-content-supplier");
+    const contentPartner = document.getElementById("copier-content-partner");
+
+    function selectCopierTab(tab) {
+      if (tab === "supplier") {
+        if (contentSupplier) contentSupplier.style.display = "grid";
+        if (contentPartner) contentPartner.style.display = "none";
+        if (tabSupplier) {
+          tabSupplier.style.background = "var(--primary-gold)";
+          tabSupplier.style.color = "#000";
+          tabSupplier.style.borderColor = "var(--primary-gold)";
+        }
+        if (tabPartner) {
+          tabPartner.style.background = "var(--bg-surface-elevated)";
+          tabPartner.style.color = "#cbd5e1";
+          tabPartner.style.borderColor = "var(--border-subtle)";
+        }
+      } else {
+        if (contentSupplier) contentSupplier.style.display = "none";
+        if (contentPartner) contentPartner.style.display = "grid";
+        if (tabPartner) {
+          tabPartner.style.background = "var(--primary-gold)";
+          tabPartner.style.color = "#000";
+          tabPartner.style.borderColor = "var(--primary-gold)";
+        }
+        if (tabSupplier) {
+          tabSupplier.style.background = "var(--bg-surface-elevated)";
+          tabSupplier.style.color = "#cbd5e1";
+          tabSupplier.style.borderColor = "var(--border-subtle)";
+        }
+      }
+    }
+
+    if (tabSupplier) tabSupplier.onclick = () => selectCopierTab("supplier");
+    if (tabPartner) tabPartner.onclick = () => selectCopierTab("partner");
+
+    if (btnFloating) btnFloating.onclick = () => modalChat?.classList.add("open");
+    if (btnOpenChatPreview) btnOpenChatPreview.onclick = () => modalChat?.classList.add("open");
+    if (btnPartnerChatPreview) btnPartnerChatPreview.onclick = () => modalChat?.classList.add("open");
+    if (btnCloseChat) btnCloseChat.onclick = () => modalChat?.classList.remove("open");
+
+    if (btnOpenCopier) {
+      btnOpenCopier.onclick = () => {
+        selectCopierTab("supplier");
+        modalCopier?.classList.add("open");
+      };
+    }
+    if (btnOpenCopierPartner) {
+      btnOpenCopierPartner.onclick = () => {
+        selectCopierTab("partner");
+        modalCopier?.classList.add("open");
+      };
+    }
+    if (btnCloseCopier) btnCloseCopier.onclick = () => modalCopier?.classList.remove("open");
+
+    // Copiador en 1 clic
+    document.querySelectorAll(".btn-copy-template").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".copier-card");
+        const textEl = card ? card.querySelector("p") : null;
+        if (textEl) {
+          const text = textEl.innerText.trim();
+          navigator.clipboard.writeText(text).then(() => {
+            const originalText = btn.textContent;
+            btn.textContent = "✅ ¡Copiado!";
+            btn.style.background = "rgba(74,222,128,0.15)";
+            btn.style.color = "#4ade80";
+            showToast("📋 Mensaje copiado listo para enviar por WhatsApp.");
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.style.background = "";
+              btn.style.color = "";
+            }, 2500);
+          });
+        }
+      });
+    });
+
+    function appendChatMessage(sender, html) {
+      if (!chatMessages) return;
+      const msg = document.createElement("div");
+      msg.className = `chat-msg ${sender}`;
+      msg.innerHTML = `
+        <div class="chat-msg-avatar">${sender === 'bot' ? '🤖' : '👤'}</div>
+        <div class="chat-msg-bubble">${html}</div>
+      `;
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function processEmpleadoQuery(query) {
+      const q = query.toLowerCase().trim();
+      if (!q) return;
+
+      const userTextEscaped = document.createElement("div");
+      userTextEscaped.textContent = query;
+      appendChatMessage("user", userTextEscaped.innerHTML);
+
+      setTimeout(() => {
+        if (q.includes("medid") || q.includes("alto") || q.includes("ancho") || q.includes("cabe") || q.includes("laptop") || q.includes("celular") || q.includes("pro max") || q.includes("tamano") || q.includes("tamaño")) {
+          appendChatMessage("bot", `
+            📐 <strong>Guía de Medidas y Capacidad en Centímetros:</strong><br><br>
+            • <strong>Tote Bags & Handbags:</strong> 30 a 34 cm (Alto) x 38 a 42 cm (Ancho) x 14 cm (Profundidad). <em>¡Cabe perfectamente laptop de 13" o 14", termo y cosmetiquera!</em><br>
+            • <strong>Satchel & Estructurados:</strong> 20 a 24 cm (Alto) x 26 a 30 cm (Ancho) x 10 cm (Profundidad). <em>Ideal para billetera larga, celular Pro Max y llaves.</em><br>
+            • <strong>Crossbody / Bandoleras:</strong> 16 a 18 cm (Alto) x 22 a 24 cm (Ancho) x 8 cm (Profundidad). <em>Compacto y cómodo para celular, labiales y tarjetas.</em><br>
+            • <strong>Billeteras & Clutches:</strong> 10 cm (Alto) x 19 cm (Ancho) x 3 cm (Profundidad). <em>Con 12 tarjeteros y bolsillo monedero con cierre.</em><br><br>
+            💡 Todos los modelos tienen sus medidas exactas detalladas en cada ficha.
+          `);
+        } else if (q.includes("envio") || q.includes("entrega") || q.includes("flete") || q.includes("domicilio") || q.includes("contraentrega") || q.includes("bogota") || q.includes("cali") || q.includes("medellin")) {
+          appendChatMessage("bot", `
+            🚚 <strong>Cobertura & Envíos Contraentrega a Toda Colombia:</strong><br><br>
+            • <strong>En Bogotá & Cali:</strong> Envíos express el mismo día con motorizado propio y opción contraentrega.<br>
+            • <strong>Resto del País (Medellín, Barranquilla, Bucaramanga, Eje Cafetero, etc.):</strong> Despachos por <strong>Coordinadora, Envía o Interrapidísimo</strong> asegurados.<br>
+            • <strong>Tiempos:</strong> 24 a 48 horas hábiles a ciudades principales; 48 a 72 horas a municipios nacionales.<br><br>
+            📦 Cada bolso se despacha en bolsa cubrepolvo con protección de herrajes dorados.
+          `);
+        } else if (q.includes("ganar") || q.includes("revend") || q.includes("socio") || q.includes("partner") || q.includes("mayor") || q.includes("dropshipping") || q.includes("precio") || q.includes("iniciar")) {
+          appendChatMessage("bot", `
+            💰 <strong>¿Cómo ganar dinero revendiendo carteras y bolsos?</strong><br><br>
+            1. <strong>Cero inversión en inventario:</strong> No necesitas comprar lotes por adelantado.<br>
+            2. <strong>Catálogo en la nube:</strong> Compartes las fotos en HD de BAGS WORLD en tus estados de WhatsApp o historias de Instagram.<br>
+            3. <strong>Tu margen limpio:</strong> Compras a costo de Bodega Matriz ($65.000 - $85.000 COP) y vendes al detal ($125.000 - $165.000 COP).<br>
+            👉 <strong>Te ganas entre $45.000 y $75.000 COP netos por cada bolso vendido</strong>.<br><br>
+            Tú solo nos pasas los datos del cliente y nosotros despachamos por ti con tu marca.
+          `);
+        } else if (q.includes("material") || q.includes("cuero") || q.includes("herraje") || q.includes("calidad") || q.includes("costura") || q.includes("cremallera") || q.includes("cierre")) {
+          appendChatMessage("bot", `
+            👜 <strong>Materiales y Confección Premium:</strong><br><br>
+            • <strong>Cuerpo Exterior:</strong> Cuero sintético importado PU de alta densidad (ecocuero texturizado impermeable, resistente al desgaste y arañazos).<br>
+            • <strong>Herrajes:</strong> Aleación de zinc con baño dorado electrolítico de alto brillo y capa protectora antioxidable.<br>
+            • <strong>Interior:</strong> Forro textil satinado de alta durabilidad con bolsillos organizadores internos y cremallera reforzada.<br>
+            • <strong>Correas:</strong> Doble costura con remaches de acero para soportar peso continuo sin deformarse.
+          `);
+        } else if (q.includes("garantia") || q.includes("cambio") || q.includes("color") || q.includes("defect") || q.includes("devolucion")) {
+          appendChatMessage("bot", `
+            🛡️ <strong>Garantía Oficial & Cambio Ágil de Tono:</strong><br><br>
+            • <strong>Garantía directa de 30 días:</strong> Cubre cualquier defecto de fábrica en cremalleras, herrajes o costuras.<br>
+            • <strong>Cambio de color ágil:</strong> Si a tu clienta le gustó otro colorway (por ejemplo pidió Crema y prefiere Negro), coordinamos el cambio de tono de inmediato en bodega.<br><br>
+            ¡Tus compras y las de tus clientas están 100% blindadas! ✨
+          `);
+        } else if (q.includes("whatsapp") || q.includes("asesor") || q.includes("humano") || q.includes("telefono") || q.includes("celular") || q.includes("hablar")) {
+          const store = db.getCurrentStore();
+          appendChatMessage("bot", `
+            📲 <strong>Contacto Directo con Asesor Humano:</strong><br><br>
+            Puedes comunicarte de inmediato con nuestra línea oficial de atención:<br>
+            • <strong>WhatsApp:</strong> <a href="https://wa.me/${store.phone || '573165558899'}" target="_blank" style="color: var(--primary-gold); font-weight: 800; text-decoration: underline;">+${store.phone || '57 316 555 8899'}</a><br>
+            • <strong>Atención:</strong> Lunes a Sábado de 8:00 AM a 7:00 PM.<br><br>
+            ¡Te responderán en pocos minutos! 👜✨
+          `);
+        } else {
+          appendChatMessage("bot", `
+            👜 <strong>Información sobre BAGS WORLD MLS:</strong><br><br>
+            Disponemos de 8 colecciones exclusivas de bolsos importados con stock centralizado en bodega.<br><br>
+            Puedes preguntarme por:<br>
+            • <strong>"Medidas"</strong> para saber las dimensiones y capacidad.<br>
+            • <strong>"Envíos"</strong> para cobertura y contraentrega nacional.<br>
+            • <strong>"Ganancias"</strong> para saber cuánto ganas revendiendo sin stock.<br>
+            • <strong>"Materiales"</strong> para detalles de herrajes y cuero.<br>
+            • O toca en <em>"Hablar con un Asesor"</em> para atención en WhatsApp. 👇
+          `);
+        }
+      }, 250);
+    }
+
+    if (chatForm) {
+      chatForm.onsubmit = (e) => {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (text) {
+          processEmpleadoQuery(text);
+          chatInput.value = "";
+        }
+      };
+    }
+
+    document.querySelectorAll(".quick-action-chip").forEach(chip => {
+      chip.onclick = () => {
+        const ask = chip.dataset.ask;
+        if (ask === "medidas") processEmpleadoQuery("¿Cuáles son las medidas y qué cabe en los bolsos?");
+        else if (ask === "envios") processEmpleadoQuery("¿Cuáles son los tiempos de envío y fletes contraentrega?");
+        else if (ask === "ganancias") processEmpleadoQuery("¿Cómo ganar dinero revendiendo bolsos como socio?");
+        else if (ask === "materiales") processEmpleadoQuery("¿De qué material están hechos los bolsos y herrajes?");
+        else if (ask === "whatsapp") processEmpleadoQuery("Quiero hablar con un asesor por WhatsApp");
+      };
+    });
+  }
+
+  // =========================================================================
+  // CREADOR DE ENLACES VIRALES PARA HISTORIAS & REDES (LINK CREATOR)
+  // =========================================================================
+  function setupLinkCreatorModal() {
+    const modal = document.getElementById("modal-link-creator");
+    const btnClose = document.getElementById("btn-close-link-creator");
+    const btnBodega = document.getElementById("btn-supplier-open-link-creator");
+    const btnPartnerTop = document.getElementById("btn-partner-open-link-creator");
+    const btnPartnerBanner = document.getElementById("btn-partner-banner-link-creator");
+
+    const btnStoreBodega = document.getElementById("btn-link-store-bodega");
+    const btnStorePartner = document.getElementById("btn-link-store-partner");
+    const storeExplainer = document.getElementById("link-store-explainer");
+
+    const btnTypeStore = document.getElementById("btn-link-type-store");
+    const btnTypeProduct = document.getElementById("btn-link-type-product");
+    const prodSelectContainer = document.getElementById("link-product-select-container");
+    const prodSelect = document.getElementById("link-product-select");
+
+    const btnFmtStory = document.getElementById("btn-link-fmt-story");
+    const btnFmtChat = document.getElementById("btn-link-fmt-chat");
+    const btnFmtBio = document.getElementById("btn-link-fmt-bio");
+
+    const urlInput = document.getElementById("link-generated-url");
+    const copyLabel = document.getElementById("link-copy-label");
+    const suggestedCopy = document.getElementById("link-suggested-copy");
+    const btnCopyLink = document.getElementById("btn-copy-generated-link");
+    const btnCopyText = document.getElementById("btn-copy-story-text");
+    const waShareBtn = document.getElementById("link-wa-share-btn");
+    const btnPreview = document.getElementById("btn-open-generated-link-preview");
+
+    let targetStoreId = "store-bagsworld-admin"; // "store-bagsworld-admin" | "store-bolsoscol"
+    let currentType = "store"; // "store" | "product"
+    let currentFormat = "story"; // "story" | "chat" | "bio"
+    let selectedProductId = null;
+
+    function populateProductSelect() {
+      if (!prodSelect) return;
+      const products = db.getMasterProducts();
+      prodSelect.innerHTML = products.map(p => `
+        <option value="${p.id}">${p.name} ($${db.formatCOP(p.suggestedRetailPrice)} COP)</option>
+      `).join("");
+      if (products.length > 0 && !selectedProductId) {
+        selectedProductId = products[0].id;
+      }
+    }
+
+    function updateStoreButtons() {
+      if (targetStoreId === "store-bagsworld-admin") {
+        if (btnStoreBodega) {
+          btnStoreBodega.classList.add("active");
+          btnStoreBodega.style.background = "var(--primary-gold)";
+          btnStoreBodega.style.color = "#000";
+          btnStoreBodega.style.borderColor = "var(--primary-gold)";
+        }
+        if (btnStorePartner) {
+          btnStorePartner.classList.remove("active");
+          btnStorePartner.style.background = "var(--bg-surface-elevated)";
+          btnStorePartner.style.color = "#cbd5e1";
+          btnStorePartner.style.borderColor = "var(--border-subtle)";
+        }
+        if (storeExplainer) {
+          storeExplainer.innerHTML = "👉 <strong>De Bodega Matriz a Revendedor:</strong> Muestra la vitrina de BAGS WORLD con fotos HD y WhatsApp directo.";
+        }
+      } else {
+        if (btnStorePartner) {
+          btnStorePartner.classList.add("active");
+          btnStorePartner.style.background = "var(--primary-gold)";
+          btnStorePartner.style.color = "#000";
+          btnStorePartner.style.borderColor = "var(--primary-gold)";
+        }
+        if (btnStoreBodega) {
+          btnStoreBodega.classList.remove("active");
+          btnStoreBodega.style.background = "var(--bg-surface-elevated)";
+          btnStoreBodega.style.color = "#cbd5e1";
+          btnStoreBodega.style.borderColor = "var(--border-subtle)";
+        }
+        if (storeExplainer) {
+          storeExplainer.innerHTML = "👉 <strong>De Boutique Partner a Cliente Final:</strong> Muestra la vitrina de BolsosCOL con tus precios al detal y tu WhatsApp para cerrar la venta.";
+        }
+      }
+    }
+
+    function generateLinkAndCopy() {
+      if (!urlInput || !suggestedCopy) return;
+
+      const origin = window.location.origin;
+      const pathname = window.location.pathname;
+      const isLocal = origin.includes("localhost") || origin.includes("127.0.0.1") || origin.startsWith("file:");
+      const baseUrl = isLocal ? "https://bagsworld.vercel.app" : `${origin}${pathname}`;
+
+      let finalUrl = `${baseUrl}?store=${encodeURIComponent(targetStoreId)}&view=storefront`;
+      let prodObj = null;
+
+      if (currentType === "product") {
+        const prodId = selectedProductId || (prodSelect ? prodSelect.value : null);
+        if (prodId) {
+          prodObj = db.getMasterProducts().find(p => p.id === prodId);
+          finalUrl += `&prod=${encodeURIComponent(prodId)}`;
+        }
+      }
+
+      urlInput.value = finalUrl;
+
+      let copyText = "";
+      const priceFmt = prodObj ? `$${db.formatCOP(prodObj.suggestedRetailPrice)} COP` : "";
+      const isBodega = targetStoreId === "store-bagsworld-admin";
+
+      if (currentFormat === "story") {
+        if (copyLabel) copyLabel.textContent = "📸 Texto gancho sugerido para tu Historia / Sticker:";
+        if (currentType === "product" && prodObj) {
+          copyText = isBodega
+            ? `👜 ${prodObj.name} disponible en bodega central con envío inmediato. Toca el sticker para ver fotos HD y pedir contraentrega 👇`
+            : `👜 ${prodObj.name} disponible (${priceFmt}). Toca el sticker para ver fotos en HD, medidas y pedir contraentrega 👇`;
+        } else {
+          copyText = isBodega
+            ? `👜 Catálogo oficial de marroquinería abierto para boutiques y revendedoras. Toca el sticker para ver modelos y stock en tiempo real 👇`
+            : `👜 ¡Nueva colección de carteras y bolsos disponible! Toca el sticker para ver el catálogo en vivo y pedir contraentrega a tu casa 👇`;
+        }
+      } else if (currentFormat === "chat") {
+        if (copyLabel) copyLabel.textContent = "💬 Mensaje listo para enviar por WhatsApp a la clienta:";
+        if (currentType === "product" && prodObj) {
+          copyText = isBodega
+            ? `¡Hola! 👋 Te comparto las fotos oficiales y disponibilidad del ${prodObj.name} en Bodega Matriz BAGS WORLD. Puedes pedir directamente aquí: ${finalUrl}`
+            : `¡Hola hermosa! 👋 Te comparto las fotos oficiales y detalles del ${prodObj.name} (${priceFmt}). Puedes ver fotos de todos los colores y pedir aquí: ${finalUrl}`;
+        } else {
+          copyText = isBodega
+            ? `¡Hola! 👋 Te comparto nuestra vitrina oficial en vivo de BAGS WORLD Colombia. Puedes revisar stock disponible y fotos HD aquí: ${finalUrl}`
+            : `¡Hola! 👋 Mira todo nuestro catálogo de bolsos y carteras disponible con fotos reales y consulta de colores en tiempo real aquí: ${finalUrl}`;
+        }
+      } else if (currentFormat === "bio") {
+        if (copyLabel) copyLabel.textContent = "🌐 Texto recomendado para tu Biografía de Instagram / TikTok:";
+        copyText = isBodega
+          ? `👜 Bodega Mayorista de Bolsos & Marroquinería | Catálogo en Vivo & Despachos Nacionales 👇\n${finalUrl}`
+          : `👜 Carteras & Bolsos de Lujo con Pago Contraentrega en Colombia ✨ Mira el Catálogo Oficial aquí 👇\n${finalUrl}`;
+      }
+
+      suggestedCopy.textContent = copyText;
+
+      if (waShareBtn) {
+        const waMsg = encodeURIComponent(`${copyText}\n\n${finalUrl}`);
+        waShareBtn.href = `https://wa.me/?text=${waMsg}`;
+      }
+
+      if (btnPreview) {
+        btnPreview.onclick = () => window.open(finalUrl, "_blank");
+      }
+    }
+
+    if (btnStoreBodega) {
+      btnStoreBodega.onclick = () => {
+        targetStoreId = "store-bagsworld-admin";
+        updateStoreButtons();
+        generateLinkAndCopy();
+      };
+    }
+
+    if (btnStorePartner) {
+      btnStorePartner.onclick = () => {
+        targetStoreId = "store-bolsoscol";
+        updateStoreButtons();
+        generateLinkAndCopy();
+      };
+    }
+
+    function selectType(type) {
+      currentType = type;
+      if (type === "store") {
+        btnTypeStore?.classList.add("active");
+        btnTypeProduct?.classList.remove("active");
+        if (btnTypeStore) {
+          btnTypeStore.style.background = "var(--primary-gold)";
+          btnTypeStore.style.color = "#000";
+          btnTypeStore.style.borderColor = "var(--primary-gold)";
+        }
+        if (btnTypeProduct) {
+          btnTypeProduct.style.background = "var(--bg-surface-elevated)";
+          btnTypeProduct.style.color = "#cbd5e1";
+          btnTypeProduct.style.borderColor = "var(--border-subtle)";
+        }
+        if (prodSelectContainer) prodSelectContainer.style.display = "none";
+      } else {
+        btnTypeProduct?.classList.add("active");
+        btnTypeStore?.classList.remove("active");
+        if (btnTypeProduct) {
+          btnTypeProduct.style.background = "var(--primary-gold)";
+          btnTypeProduct.style.color = "#000";
+          btnTypeProduct.style.borderColor = "var(--primary-gold)";
+        }
+        if (btnTypeStore) {
+          btnTypeStore.style.background = "var(--bg-surface-elevated)";
+          btnTypeStore.style.color = "#cbd5e1";
+          btnTypeStore.style.borderColor = "var(--border-subtle)";
+        }
+        if (prodSelectContainer) prodSelectContainer.style.display = "block";
+      }
+      generateLinkAndCopy();
+    }
+
+    if (btnTypeStore) btnTypeStore.onclick = () => selectType("store");
+    if (btnTypeProduct) btnTypeProduct.onclick = () => selectType("product");
+
+    if (prodSelect) {
+      prodSelect.onchange = () => {
+        selectedProductId = prodSelect.value;
+        generateLinkAndCopy();
+      };
+    }
+
+    function selectFormat(fmt) {
+      currentFormat = fmt;
+      [btnFmtStory, btnFmtChat, btnFmtBio].forEach(b => {
+        if (!b) return;
+        b.classList.remove("active");
+        b.style.background = "var(--bg-surface-elevated)";
+        b.style.color = "#cbd5e1";
+        b.style.borderColor = "var(--border-subtle)";
+      });
+      const activeBtn = fmt === "story" ? btnFmtStory : (fmt === "chat" ? btnFmtChat : btnFmtBio);
+      if (activeBtn) {
+        activeBtn.classList.add("active");
+        activeBtn.style.background = "rgba(230, 25, 46, 0.15)";
+        activeBtn.style.color = "#ffffff";
+        activeBtn.style.borderColor = "var(--primary-red)";
+      }
+      generateLinkAndCopy();
+    }
+
+    if (btnFmtStory) btnFmtStory.onclick = () => selectFormat("story");
+    if (btnFmtChat) btnFmtChat.onclick = () => selectFormat("chat");
+    if (btnFmtBio) btnFmtBio.onclick = () => selectFormat("bio");
+
+    if (btnCopyLink) {
+      btnCopyLink.onclick = () => {
+        if (urlInput) {
+          navigator.clipboard.writeText(urlInput.value).then(() => {
+            btnCopyLink.textContent = "✅ ¡Enlace Copiado!";
+            showToast("📋 Enlace de vitrina pública copiado.");
+            setTimeout(() => { btnCopyLink.textContent = "📋 Copiar Enlace"; }, 2500);
+          });
+        }
+      };
+    }
+
+    if (btnCopyText) {
+      btnCopyText.onclick = () => {
+        if (suggestedCopy) {
+          navigator.clipboard.writeText(suggestedCopy.textContent.trim()).then(() => {
+            btnCopyText.textContent = "✅ ¡Copiado!";
+            showToast("📋 Texto persuasivo copiado.");
+            setTimeout(() => { btnCopyText.textContent = "📋 Copiar Texto"; }, 2500);
+          });
+        }
+      };
+    }
+
+    function openModalForStore(storeId) {
+      populateProductSelect();
+      targetStoreId = storeId || "store-bagsworld-admin";
+      updateStoreButtons();
+      generateLinkAndCopy();
+      modal?.classList.add("open");
+    }
+
+    if (btnBodega) btnBodega.onclick = () => openModalForStore("store-bagsworld-admin");
+    if (btnPartnerTop) btnPartnerTop.onclick = () => openModalForStore("store-bolsoscol");
+    if (btnPartnerBanner) btnPartnerBanner.onclick = () => openModalForStore("store-bolsoscol");
+    if (btnClose) btnClose.onclick = () => modal?.classList.remove("open");
   }

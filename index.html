@@ -83,6 +83,15 @@
               <!-- Renderizado dinámico de tiendas -->
             </select>
           </div>
+          
+          <div class="theme-selector-wrapper" style="margin-right: 4px;">
+            <span style="font-size: 11px;">🎨</span>
+            <select id="hud-theme-select-master" class="theme-selector-select" aria-label="Cambiar Tema Visual">
+              <option value="obsidian-gold">👑 Obsidian Gold</option>
+              <option value="cyber-velvet">⚡ Cyber Velvet</option>
+              <option value="emerald-mirage">🌿 Emerald Mirage</option>
+            </select>
+          </div>
           <button id="btn-open-privacy-modal" class="btn-action-sm" title="Configurar Cuenta & Seguridad" style="font-size: 11px; padding: 5px 12px; font-weight: 700; background: rgba(227, 194, 116, 0.15); color: var(--primary-gold); border-color: rgba(227, 194, 116, 0.4);">⚙️ Seguridad</button>
           <button id="btn-logout-hud" class="btn-action-sm" style="font-size: 11px; padding: 5px 12px; text-decoration: none; font-weight: 700; color: #f87171; border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.1);">🚪 Salir</button>
           <button id="btn-reset-demo" class="btn-reset-demo" title="Restaurar datos oficiales">↺ Reset</button>
@@ -101,6 +110,15 @@
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
+          
+          <div class="theme-selector-wrapper">
+            <span style="font-size: 11px;">🎨</span>
+            <select id="hud-theme-select-client" class="theme-selector-select" aria-label="Cambiar Tema Visual">
+              <option value="obsidian-gold">👑 Obsidian Gold</option>
+              <option value="cyber-velvet">⚡ Cyber Velvet</option>
+              <option value="emerald-mirage">🌿 Emerald Mirage</option>
+            </select>
+          </div>
           <button id="btn-client-toggle-view" class="btn-action-sm" style="font-size: 11px; padding: 6px 14px; font-weight: 700;">🛒 Ver Mi Vitrina</button>
           <button id="btn-client-open-account" class="btn-action-sm" style="font-size: 11px; padding: 6px 14px; font-weight: 700;">⚙️ Mi Cuenta</button>
           <button id="btn-client-logout" class="btn-action-sm" style="font-size: 11px; padding: 6px 14px; font-weight: 700; color: #f87171; border-color: rgba(239,68,68,0.3);">🚪 Cerrar Sesión</button>
@@ -234,6 +252,7 @@
           </div>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button class="btn-primary" id="btn-save-store-prices" style="background: var(--accent-emerald); border-color: var(--accent-emerald); font-weight: 800;">💾 Guardar Precios</button>
+            <button type="button" id="btn-partner-open-link-creator" class="btn-primary" style="font-weight: 700; font-size: 12px; background: #0f172a; border-color: #0f172a; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;"><span>🔗 Crear Enlace (Historias & Clientes)</span></button>
             <button class="btn-secondary" id="btn-open-quote-modal-partner" style="border-color: rgba(227, 194, 116, 0.4); color: var(--primary-gold); font-weight: 700;">📝 Cotizador VIP Cliente</button>
             <button class="btn-secondary" id="btn-open-store-reports" style="border-color: rgba(56, 189, 248, 0.4); color: var(--accent-blue); font-weight: 700;">📊 Mi Contabilidad & Excel</button>
             <button class="btn-secondary" id="btn-open-store-settings">⚙️ Configurar Boutique</button>
@@ -390,6 +409,39 @@
           </div>
         </div>
 
+        
+        <!-- Banner Empleado Digital 24/7 Bodega Matriz -->
+        <div class="table-container-card" style="margin-bottom: 24px; border: 1px solid rgba(230,25,46,0.35); background: linear-gradient(135deg, rgba(230,25,46,0.06) 0%, rgba(14,17,23,0.95) 100%);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(230,25,46,0.18); border: 2px solid var(--primary-red); display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative;">
+                🤖
+                <span style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; border: 2px solid #06070a;"></span>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: #ffffff;">Empleado Digital 24/7/365 Activo</h3>
+                  <span style="font-size: 10px; font-weight: 800; color: #4ade80; background: rgba(74,222,128,0.15); padding: 2px 8px; border-radius: 999px;">PILOTO AUTOMÁTICO</span>
+                </div>
+                <p style="margin: 4px 0 0; font-size: 12px; color: var(--text-secondary); max-width: 620px;">
+                  Atiende consultas de boutiques y revendedoras las 24 horas del día. Valida medidas en cm, capacidad de bolsos, forros y pre-arma pedidos a WhatsApp. Te ahorra ~4 horas diarias de chat repetitivo (<strong>+28 horas libres semanales</strong>).
+                </p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <button type="button" id="btn-supplier-open-link-creator" class="btn-primary" style="background: #0f172a; border-color: #0f172a; font-size: 12px; padding: 8px 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                🔗 Crear Enlace Historias
+              </button>
+              <button type="button" id="btn-open-empleado-copier" class="btn-primary" style="background: var(--primary-red); border-color: var(--primary-red); font-size: 12px; padding: 8px 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                ⚡ Respuestas Rápidas (1 Clic)
+              </button>
+              <button type="button" id="btn-open-empleado-chat-preview" class="btn-secondary" style="font-size: 12px; padding: 8px 12px; font-weight: 700; cursor: pointer;">
+                💬 Abrir Chat Asistente
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Herramienta Rápida de Importación desde WhatsApp -->
         <div class="table-container-card" style="margin-bottom: 24px; border: 1px solid rgba(37, 211, 102, 0.35); background: linear-gradient(180deg, rgba(37, 211, 102, 0.05) 0%, rgba(16, 19, 26, 0.95) 100%);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
@@ -420,6 +472,39 @@ Medidas 16 alto x 20 ancho"></textarea>
         </div>
 
         <!-- Tabla del Catálogo Maestro de Referencias -->
+        
+        <!-- Banner Empleado Digital 24/7 Boutique Partner -->
+        <div class="table-container-card" style="margin-bottom: 24px; border: 1px solid rgba(227, 194, 116, 0.35); background: linear-gradient(135deg, rgba(227, 194, 116, 0.08) 0%, rgba(14,17,23,0.95) 100%);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(227, 194, 116, 0.2); border: 2px solid var(--primary-gold); display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative;">
+                🤖
+                <span style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; border: 2px solid #06070a;"></span>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: #ffffff;">Empleado Digital 24/7 en tu Boutique</h3>
+                  <span style="font-size: 10px; font-weight: 800; color: var(--primary-gold); background: rgba(227, 194, 116, 0.15); padding: 2px 8px; border-radius: 999px;">VENTAS EN PILOTO AUTOMÁTICO</span>
+                </div>
+                <p style="margin: 4px 0 0; font-size: 12px; color: var(--text-secondary); max-width: 620px;">
+                  Vende carteras y bolsos en piloto automático las 24 horas del día. Atiende compradoras en Instagram y TikTok, cotiza precios con tu margen de ganancia y pasa los pedidos a bodega sin que trasnoches contestando mensajes (<strong>+21 horas libres semanales</strong>).
+                </p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <button type="button" id="btn-partner-banner-link-creator" class="btn-primary" style="background: #0f172a; border-color: #0f172a; font-size: 12px; padding: 8px 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                🔗 Crear Enlace Historias
+              </button>
+              <button type="button" id="btn-open-empleado-copier-partner" class="btn-primary" style="background: var(--primary-red); border-color: var(--primary-red); font-size: 12px; padding: 8px 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                ⚡ Respuestas Rápidas (1 Clic)
+              </button>
+              <button type="button" id="btn-partner-chat-preview" class="btn-secondary" style="font-size: 12px; padding: 8px 12px; font-weight: 700; cursor: pointer;">
+                💬 Abrir Chat Asistente
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="table-container-card" style="margin-bottom: 24px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
             <div>
@@ -441,6 +526,7 @@ Medidas 16 alto x 20 ancho"></textarea>
                   <th>Campaña Activa</th>
                   <th>Stock Bodega</th>
                   <th>Variantes de Color</th>
+                  <th>Estado</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -904,13 +990,38 @@ Medidas 16 alto x 20 ancho"></textarea>
           <label class="form-label">Medidas Exactas (Alto x Ancho x Profundidad)</label>
           <input type="text" id="new-prod-dim" class="form-input" value="18 cm (Alto) x 22 cm (Ancho) x 8 cm (Profundidad)">
         </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Estado de la Referencia</label>
+            <select id="new-prod-status" class="form-select">
+              <option value="active">🟢 Habilitada (Visible en vitrinas)</option>
+              <option value="inactive">⏸️ Inactiva / Pausada (Agotada o fuera de moda)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Insignia de Campaña</label>
+            <select id="new-prod-campaign" class="form-select">
+              <option value="">Sin insignia especial</option>
+              <option value="🔥 Promo Amor y Amistad">🔥 Promo Amor y Amistad</option>
+              <option value="⚡ Liquidación Lotes">⚡ Liquidación Lotes</option>
+              <option value="🌟 Nuevo Drop 2026">🌟 Nuevo Drop 2026</option>
+              <option value="👑 Más Vendido">👑 Más Vendido</option>
+            </select>
+          </div>
+        </div>
+        <input type="hidden" id="new-prod-id" value="">
         <div class="form-group">
           <label class="form-label">Descripción & Especificaciones</label>
           <textarea id="new-prod-desc" class="form-textarea" rows="2" placeholder="Materiales, cierres, forro, correa ajustable, etc."></textarea>
         </div>
-        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px;">
-          Publicar al Catálogo Maestro BAGS WORLD
-        </button>
+        <div style="display: flex; gap: 10px; margin-top: 14px;">
+          <button type="button" id="btn-delete-from-modal" class="btn-action-sm" style="display: none; background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.3); font-weight: 800; padding: 12px 18px; cursor: pointer;">
+            🗑️ Eliminar
+          </button>
+          <button type="submit" id="btn-submit-master-form" class="btn-primary" style="flex: 1; justify-content: center; padding: 12px;">
+            Publicar al Catálogo Maestro BAGS WORLD
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -1425,12 +1536,290 @@ Medidas 16 alto x 20 ancho"></textarea>
         <strong style="color: #ffffff;">BAGS WORLD MLS</strong> — Red Matriz de Bolsos, Carteras & Marroquinería Colombia
       </div>
       <div style="display: flex; gap: 12px; align-items: center;">
-        <a href="admin.html" class="btn-action-sm" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--primary-gold); border-color: rgba(227, 194, 116, 0.4); background: rgba(227, 194, 116, 0.1);">
-          🔐 Portal Privado Proveedores & Boutiques Partners
-        </a>
+        <span style="color: var(--text-muted); font-size: 11px;">Plataforma Oficial B2B & Catálogo Sincronizado</span>
       </div>
     </div>
   </footer>
+
+  
+  <!-- BOTÓN FLOTANTE: SELECTOR RÁPIDO DE TEMA (COOL & LLAMATIVO) -->
+  <button type="button" id="btn-floating-theme" class="btn-floating-theme-switch" aria-label="Cambiar Tema Visual">
+    <span id="floating-theme-icon">👑</span>
+    <span id="floating-theme-label">Obsidian Gold</span>
+  </button>
+
+  <!-- BOTÓN FLOTANTE: EMPLEADO DIGITAL 24/7 (STOREFRONT Y CLIENTES) -->
+  <button type="button" id="btn-floating-empleado" class="floating-empleado-btn" aria-label="Abrir Empleado Digital 24/7">
+    <div class="bot-avatar-badge">
+      <span class="bot-icon">🤖</span>
+      <span class="bot-online-dot"></span>
+    </div>
+    <div class="bot-label-pill">
+      <span class="bot-title">Empleado Digital 24/7</span>
+      <span class="bot-status">Asistente en Línea ✨</span>
+    </div>
+  </button>
+
+  <!-- =========================================================================
+       MODAL: CHAT INTERACTIVO EMPLEADO DIGITAL 24/7
+       ========================================================================= -->
+  <div class="modal-backdrop" id="modal-empleado-chat" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: var(--radius-lg);">
+      <div style="background: linear-gradient(135deg, #090d16 0%, #1e293b 100%); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: rgba(230,25,46,0.2); border: 1.5px solid var(--primary-red); display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative;">
+            🤖
+            <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #22c55e; border: 2px solid #090d16;"></span>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <h3 style="margin: 0; font-size: 15px; font-weight: 800; color: #ffffff;">Empleado Digital 24/7</h3>
+              <span style="font-size: 9px; font-weight: 800; color: #4ade80; background: rgba(74,222,128,0.15); padding: 1px 6px; border-radius: 999px;">EN LÍNEA</span>
+            </div>
+            <p style="margin: 2px 0 0; font-size: 11px; color: #94a3b8;">Asistente Virtual • BAGS WORLD Colombia</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-empleado-chat" style="color: #cbd5e1; font-size: 22px; cursor: pointer; background: none; border: none;">&times;</button>
+      </div>
+
+      <div class="empleado-chat-wrapper">
+        <!-- Historial de mensajes -->
+        <div class="empleado-chat-messages" id="empleado-chat-messages">
+          <div class="chat-msg bot">
+            <div class="chat-msg-avatar">🤖</div>
+            <div class="chat-msg-bubble">
+              ¡Hola! 👋 Soy tu <strong>Empleado Digital 24/7</strong> de <strong>BAGS WORLD Colombia</strong>.
+              <br><br>
+              Estoy aquí para resolver tus dudas de inmediato sin esperas: medidas exactas en cm, si cabe tu celular o billetera, colores disponibles, tiempos de envío contraentrega, o calcular tus ganancias como revendedora de bolsos.
+              <br><br>
+              ¿En qué te puedo colaborar hoy? 👇
+            </div>
+          </div>
+        </div>
+
+        <!-- Chips de preguntas frecuentes rápidas -->
+        <div class="empleado-quick-actions">
+          <button type="button" class="quick-action-chip" data-ask="medidas">📐 ¿Cuáles son las medidas y qué cabe?</button>
+          <button type="button" class="quick-action-chip" data-ask="envios">🚚 ¿Tiempos de envío y contraentrega?</button>
+          <button type="button" class="quick-action-chip" data-ask="ganancias">💰 ¿Cómo ganar dinero revendiendo bolsos?</button>
+          <button type="button" class="quick-action-chip" data-ask="materiales">👜 ¿Materiales y herrajes de los bolsos?</button>
+          <button type="button" class="quick-action-chip" data-ask="whatsapp">📲 Hablar con un Asesor Humano</button>
+        </div>
+
+        <!-- Barra de entrada de texto -->
+        <form id="form-empleado-chat" class="empleado-chat-input-bar">
+          <input type="text" id="empleado-chat-input" class="form-input" placeholder="Pregúntame sobre medidas, envíos, colores, ganancias..." style="flex: 1; font-size: 12px; padding: 9px 12px; border-radius: 999px;">
+          <button type="submit" class="btn-primary" style="border-radius: 50%; width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--primary-gold); color: #000; border: none; cursor: pointer; font-weight: 900;">
+            ➤
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: RESPUESTAS RÁPIDAS (EMPLEADO DIGITAL 1 CLIC)
+       ========================================================================= -->
+  <div class="modal-backdrop" id="modal-empleado-copier" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-header">
+        <div>
+          <span style="font-size: 10px; font-weight: 800; color: #15803d; background: #f0fdf4; padding: 2px 8px; border-radius: 999px;">AUTOMATIZACIÓN DE CHAT WHATSAPP</span>
+          <h3 style="margin-top: 4px; font-size: 17px;">⚡ Respuestas Rápidas con 1 Clic</h3>
+          <p style="margin: 2px 0 0; font-size: 11px; color: var(--text-muted);">Copia y pega en tus chats de WhatsApp para atender a clientas y revendedoras en 2 segundos sin trasnochar.</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-empleado-copier">&times;</button>
+      </div>
+
+      <div style="padding: 16px 20px; max-height: 65vh; overflow-y: auto;">
+        <!-- Pestañas Bodega vs Boutique Partner -->
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px;">
+          <button type="button" class="copier-tab-btn active" id="tab-copier-supplier" style="flex: 1; padding: 8px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; border: 1.5px solid var(--primary-gold); background: var(--primary-gold); color: #000; cursor: pointer;">
+            🏢 Bodega Matriz (Mayorista)
+          </button>
+          <button type="button" class="copier-tab-btn" id="tab-copier-partner" style="flex: 1; padding: 8px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; border: 1.5px solid var(--border-subtle); background: var(--bg-surface-elevated); color: #cbd5e1; cursor: pointer;">
+            👜 Boutique Partner (Venta al Detal)
+          </button>
+        </div>
+
+        <!-- SECCIÓN 1: PLANTILLAS BODEGA MATRIZ (MAYORISTA) -->
+        <div class="copier-grid" id="copier-content-supplier">
+          <div class="copier-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+              <strong style="font-size: 13px; color: var(--text-primary);">👜 1. Catálogo en Vivo Sin Llenar la Memoria</strong>
+              <button type="button" class="btn-secondary btn-copy-template" data-tpl="catalogo-b2b" style="font-size: 11px; padding: 4px 10px; font-weight: 700; cursor: pointer;">
+                📋 Copiar
+              </button>
+            </div>
+            <p style="font-size: 11.5px; color: var(--text-secondary); margin: 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-subtle); line-height: 1.4;">
+              ¡Hola! Claro que sí, aquí tienes nuestro catálogo oficial de bolsos y marroquinería en vivo. Puedes ver todas las referencias activas con sus medidas en cm, colores en stock y fotos en alta resolución sin saturar la memoria de tu teléfono: https://bagsworld.vercel.app/?demo=bagsworld
+            </p>
+          </div>
+
+          <div class="copier-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+              <strong style="font-size: 13px; color: var(--text-primary);">💳 2. Datos de Pago para Despacho Inmediato</strong>
+              <button type="button" class="btn-secondary btn-copy-template" data-tpl="pago-b2b" style="font-size: 11px; padding: 4px 10px; font-weight: 700; cursor: pointer;">
+                📋 Copiar
+              </button>
+            </div>
+            <p style="font-size: 11.5px; color: var(--text-secondary); margin: 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-subtle); line-height: 1.4;">
+              Para apartar tu lote de bolsos en bodega central antes de que se agoten los colores más pedidos:&#10;• Nequi / Daviplata: 316 555 8899&#10;• Bancolombia Ahorros: 820-998877-66 a nombre de BAGS WORLD Colombia.&#10;Nos envías el soporte por aquí para empacar y generar tu guía de Coordinadora de inmediato. 📦✨
+            </p>
+          </div>
+
+          <div class="copier-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+              <strong style="font-size: 13px; color: var(--text-primary);">📦 3. Despacho & Guía de Rastreo</strong>
+              <button type="button" class="btn-secondary btn-copy-template" data-tpl="guia-b2b" style="font-size: 11px; padding: 4px 10px; font-weight: 700; cursor: pointer;">
+                📋 Copiar
+              </button>
+            </div>
+            <p style="font-size: 11.5px; color: var(--text-secondary); margin: 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-subtle); line-height: 1.4;">
+              ¡Tu pedido ya fue alistado con forro protector de herrajes! 📦 Salida en Coordinadora Express. Te compartiremos el número de guía para que rastrees tu encomienda en tiempo real. Tiempo de entrega: 24 a 48 horas hábiles. ¡Gracias por confiar en BAGS WORLD! 👜
+            </p>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 2: PLANTILLAS BOUTIQUE PARTNER (VENTA AL DETAL) -->
+        <div class="copier-grid" id="copier-content-partner" style="display: none;">
+          <div class="copier-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+              <strong style="font-size: 13px; color: var(--text-primary);">👜 1. Bienvenida y Vitrina de la Boutique</strong>
+              <button type="button" class="btn-secondary btn-copy-template" data-tpl="bienvenida-detal" style="font-size: 11px; padding: 4px 10px; font-weight: 700; cursor: pointer;">
+                📋 Copiar
+              </button>
+            </div>
+            <p style="font-size: 11.5px; color: var(--text-secondary); margin: 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-subtle); line-height: 1.4;">
+              ¡Hola hermosa! 👋 Bienvenida a nuestra boutique de carteras y bolsos de alta gama. Puedes ver todas nuestras referencias disponibles con entrega inmediata y pago contraentrega en nuestra vitrina en vivo: https://bagsworld.vercel.app/?demo=bolsoscol ¿Qué tono o estilo estás buscando hoy? ✨
+            </p>
+          </div>
+
+          <div class="copier-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+              <strong style="font-size: 13px; color: var(--text-primary);">🚚 2. Información de Pago Contraentrega</strong>
+              <button type="button" class="btn-secondary btn-copy-template" data-tpl="contraentrega-detal" style="font-size: 11px; padding: 4px 10px; font-weight: 700; cursor: pointer;">
+                📋 Copiar
+              </button>
+            </div>
+            <p style="font-size: 11.5px; color: var(--text-secondary); margin: 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-subtle); line-height: 1.4;">
+              ¡Claro que sí! Puedes pagar en efectivo o transferencia cuando el mensajero te entregue el bolso en la puerta de tu casa. Para agendar tu envío solo necesitamos: Nombre, Teléfono, Dirección exacta y Ciudad. ¿Te aparto el tuyo ya mismo? 🛍️
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: CREADOR DE ENLACES PARA HISTORIAS & CLIENTES (BOLSOS & BODEGA)
+       ========================================================================= -->
+  <div class="modal-backdrop" id="modal-link-creator" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 580px;">
+      <div class="modal-header">
+        <div>
+          <span style="font-size: 10px; font-weight: 800; color: var(--primary-gold); background: rgba(227, 194, 116, 0.15); padding: 2px 8px; border-radius: 999px;">GENERADOR DE ENLACES VIRALES</span>
+          <h3 style="margin-top: 4px; font-size: 17px;">🔗 Creador de Enlaces para Historias & Clientes</h3>
+          <p style="margin: 2px 0 0; font-size: 11.5px; color: var(--text-muted);">Genera enlaces listos para pegar en tus Stickers de Instagram, enviar por WhatsApp o poner en tu Bio.</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-link-creator">&times;</button>
+      </div>
+
+      <div style="padding: 18px 20px; max-height: 75vh; overflow-y: auto;">
+        <!-- Paso 1: ¿De qué Vitrina de Cliente Final será el enlace? -->
+        <div class="form-group" style="margin-bottom: 14px;" id="link-store-selector-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label class="form-label" style="font-size: 11.5px; font-weight: 800; margin: 0;">1. ¿De qué Vitrina de Cliente Final será el enlace?</label>
+            <span style="font-size: 10px; font-weight: 800; color: #15803d; background: #f0fdf4; padding: 2px 7px; border-radius: 999px; border: 1px solid #bbf7d0;">👁️ Vista Pública</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px;">
+            <button type="button" class="btn-secondary link-origin-store-btn active" id="btn-link-store-bodega" data-store-id="store-bagsworld-admin" style="padding: 10px; text-align: left; border-radius: 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; border-color: var(--primary-gold); background: rgba(227, 194, 116, 0.15); color: #ffffff;">
+              🏢 Vitrina Bodega Matriz
+            </button>
+            <button type="button" class="btn-secondary link-origin-store-btn" id="btn-link-store-partner" data-store-id="store-bolsoscol" style="padding: 10px; text-align: left; border-radius: 10px; font-size: 11.5px; font-weight: 700; cursor: pointer;">
+              👜 Vitrina Boutique Partner (BolsosCOL)
+            </button>
+          </div>
+          <p style="font-size: 11px; color: var(--text-secondary); margin: 0; line-height: 1.35;" id="link-store-explainer">
+            👉 <strong>De Bodega a Revendedor:</strong> Muestra la vitrina pública de BAGS WORLD con fotos HD y WhatsApp directo.
+          </p>
+        </div>
+
+        <!-- Paso 2: ¿Qué vas a compartir? -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" style="font-size: 11.5px; font-weight: 800;">2. ¿Qué deseas compartir?</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <button type="button" class="btn-secondary link-target-type-btn active" id="btn-link-type-store" data-type="store" style="padding: 10px; text-align: left; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border-color: var(--primary-gold); background: rgba(227, 194, 116, 0.15); color: #ffffff;">
+              🏪 Toda la Vitrina / Catálogo
+            </button>
+            <button type="button" class="btn-secondary link-target-type-btn" id="btn-link-type-product" data-type="product" style="padding: 10px; text-align: left; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+              👜 Un Bolso Específico
+            </button>
+          </div>
+          <div id="link-product-select-container" style="display: none; margin-top: 8px;">
+            <label class="form-label" style="font-size: 11px;">Elige el bolso del catálogo:</label>
+            <select id="link-product-select" class="form-input" style="font-size: 12px; font-weight: 600;"></select>
+          </div>
+        </div>
+
+        <!-- Paso 3: Formato de Publicación -->
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" style="font-size: 11.5px; font-weight: 800;">3. ¿Dónde lo vas a publicar?</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+            <button type="button" class="btn-secondary link-format-btn active" id="btn-link-fmt-story" data-format="story" style="font-size: 11px; padding: 8px 6px; font-weight: 700; text-align: center; cursor: pointer; border-color: var(--primary-red); background: rgba(230, 25, 46, 0.15); color: #ffffff;">
+              📸 Historia Instagram
+            </button>
+            <button type="button" class="btn-secondary link-format-btn" id="btn-link-fmt-chat" data-format="chat" style="font-size: 11px; padding: 8px 6px; font-weight: 700; text-align: center; cursor: pointer;">
+              💬 Chat WhatsApp
+            </button>
+            <button type="button" class="btn-secondary link-format-btn" id="btn-link-fmt-bio" data-format="bio" style="font-size: 11px; padding: 8px 6px; font-weight: 700; text-align: center; cursor: pointer;">
+              🌐 Bio Instagram / TikTok
+            </button>
+          </div>
+        </div>
+
+        <!-- Caja de Enlace Generado -->
+        <div style="background: rgba(0,0,0,0.4); border: 1.5px solid var(--border-subtle); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 11px; font-weight: 800; color: var(--text-primary);">🔗 Tu Enlace de Vitrina Pública:</span>
+            <span id="link-generated-badge" style="font-size: 10px; font-weight: 800; color: #4ade80; background: rgba(74,222,128,0.15); padding: 1px 7px; border-radius: 999px;">Listo para compartir</span>
+          </div>
+          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <input type="text" id="link-generated-url" class="form-input" readonly style="font-size: 11px; font-weight: 700; background: #000; color: #fff; padding: 8px 10px; cursor: text;">
+            <button type="button" id="btn-copy-generated-link" class="btn-primary" style="font-size: 12px; padding: 8px 14px; font-weight: 700; flex-shrink: 0; background: var(--primary-gold); color: #000; cursor: pointer;">
+              📋 Copiar Enlace
+            </button>
+          </div>
+          <div style="font-size: 10.5px; color: #4ade80; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 4px;">
+            <span>🛡️</span> <span>Abre directamente la vitrina de cliente final (NUNCA expone costos de bodega ni accesos admin).</span>
+          </div>
+
+          <!-- Sugerencia de Copy / Texto para Historias o WhatsApp -->
+          <div id="link-copy-text-box" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 11px; font-weight: 800; color: var(--text-secondary);" id="link-copy-label">📸 Texto gancho sugerido para tu Historia:</span>
+              <button type="button" id="btn-copy-story-text" class="btn-secondary" style="font-size: 10px; padding: 3px 8px; font-weight: 700; cursor: pointer;">
+                📋 Copiar Texto
+              </button>
+            </div>
+            <p id="link-suggested-copy" style="font-size: 11.5px; color: #cbd5e1; margin: 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-subtle); line-height: 1.4;">
+              👜 ¡Nueva colección de carteras y bolsos importados disponible! Toca el sticker para ver el catálogo en vivo, fotos HD y pedir contraentrega 👇
+            </p>
+          </div>
+        </div>
+
+        <!-- Botones de Acción Inmediata -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="#" id="link-wa-share-btn" target="_blank" rel="noopener" class="btn-primary" style="flex: 1; justify-content: center; font-size: 12px; background: #25d366; border-color: #25d366; color: #000; font-weight: 800; padding: 10px 14px; text-decoration: none;">
+            📲 Compartir Directo en WhatsApp
+          </a>
+          <button type="button" id="btn-open-generated-link-preview" class="btn-secondary" style="font-size: 12px; padding: 10px 14px; font-weight: 700; cursor: pointer;">
+            👁️ Probar Vitrina
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Barra Flotante de Carrito / Pedido Rápido -->
   <div class="floating-cart-bar" id="floating-cart-bar" role="button" aria-label="Abrir Carrito">
