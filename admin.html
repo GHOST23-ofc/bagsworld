@@ -163,29 +163,35 @@
         <div style="font-size: 11px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.8px; text-align: left; margin-bottom: 8px;">
           ⚡ Accesos Rápidos de Demostración:
         </div>
-        <div class="scenario-quick-grid">
-          <!-- Escenario 1: BolsosCOL (Cliente VIP a cerrar) -->
-          <button type="button" class="scenario-btn" id="btn-quick-bolsoscol">
-            <span class="scenario-badge badge-gold">CLIENTE VIP A CERRAR</span>
-            <span class="scenario-title">👜 BolsosCOL</span>
-            <span class="scenario-desc">Boutique en Bogotá • Precios personalizados & margen propio.</span>
-          </button>
-
-          <!-- Escenario 2: Calibolsos2026 (Partner Cali) -->
-          <button type="button" class="scenario-btn" id="btn-quick-calibolsos">
-            <span class="scenario-badge badge-blue">BOUTIQUE CALI</span>
-            <span class="scenario-title">🏪 Calibolsos 2026</span>
-            <span class="scenario-desc">Boutique en Cali • Envíos el mismo día y catálogo activo.</span>
-          </button>
-
-          <!-- Escenario 3: Bodega Matriz BAGS WORLD -->
-          <button type="button" class="scenario-btn" id="btn-quick-bagsworld" style="grid-column: 1 / -1;">
+        <div class="scenario-quick-grid" style="grid-template-columns: 1fr; gap: 10px;">
+          <!-- 1. PANEL 1: ADMIN CON CONTROL ABSOLUTO -->
+          <button type="button" class="scenario-btn" id="btn-quick-superadmin" style="border-color: rgba(227, 194, 116, 0.45); background: rgba(227, 194, 116, 0.08);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span class="scenario-badge" style="background: rgba(230, 25, 46, 0.2); color: var(--primary-red); border: 1px solid rgba(230, 25, 46, 0.4);">CENTRAL MAYORISTA</span>
-              <span style="font-size: 10px; color: var(--primary-gold); font-weight: 800;">DUEÑO DEL SAAS 👑</span>
+              <span class="scenario-badge badge-gold">PANEL 1 • CONTROL ABSOLUTO 👑</span>
+              <span style="font-size: 10px; color: var(--primary-gold); font-weight: 800;">DUEÑO DEL SAAS</span>
             </div>
-            <span class="scenario-title" style="margin-top: 4px;">📦 BAGS WORLD Colombia (SuperAdmin)</span>
-            <span class="scenario-desc">Control maestro de precios, importador directo, matriz de stock y centro contable.</span>
+            <span class="scenario-title" style="font-size: 14px; margin-top: 4px;">⚡ Admin Supremo MLS</span>
+            <span class="scenario-desc">Control total de la red MLS, directorios, todas las tiendas, temas visuales y finanzas globales.</span>
+          </button>
+
+          <!-- 2. PANEL 2: BODEGA MATRIZ PROVEEDOR -->
+          <button type="button" class="scenario-btn" id="btn-quick-supplier" style="border-color: rgba(230, 25, 46, 0.45); background: rgba(230, 25, 46, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="scenario-badge" style="background: rgba(230, 25, 46, 0.2); color: var(--primary-red); border: 1px solid rgba(230, 25, 46, 0.4);">PANEL 2 • CENTRAL MAYORISTA 📦</span>
+              <span style="font-size: 10px; color: #cbd5e1; font-weight: 700;">PROVEEDOR</span>
+            </div>
+            <span class="scenario-title" style="font-size: 14px; margin-top: 4px;">📦 Bodega Matriz Proveedor</span>
+            <span class="scenario-desc">Inventario maestro por colores, stock en tiempo real, despachos B2B, garantías y vitrina de bodega.</span>
+          </button>
+
+          <!-- 3. PANEL 3: BAG PARTNER REVENDEDOR -->
+          <button type="button" class="scenario-btn" id="btn-quick-bolsoscol" style="border-color: rgba(56, 189, 248, 0.45); background: rgba(56, 189, 248, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="scenario-badge badge-blue">PANEL 3 • REVENDEDOR OFICIAL 👜</span>
+              <span style="font-size: 10px; color: var(--accent-blue); font-weight: 700;">BOUTIQUE PARTNER</span>
+            </div>
+            <span class="scenario-title" style="font-size: 14px; margin-top: 4px;">👜 Bag Partner (BolsosCOL)</span>
+            <span class="scenario-desc">Configuración de PVP, margen comercial propio, clientes, vitrina personalizada y pedidos.</span>
           </button>
         </div>
       </div>
@@ -270,29 +276,38 @@
       }
     };
 
-    // 1-Click: Escenario 1 BolsosCOL
-    document.getElementById("btn-quick-bolsoscol").onclick = () => {
-      emailInput.value = "contacto@bolsoscol.com";
-      passInput.value = "BolsosCOL2026*";
-      errorMsg.style.display = "none";
-      showToast("Credenciales de BolsosCOL cargadas.");
-    };
+    // 1-Click: Panel 1 Admin Supremo
+    const btnQuickAdmin = document.getElementById("btn-quick-superadmin");
+    if (btnQuickAdmin) {
+      btnQuickAdmin.onclick = () => {
+        emailInput.value = "admin@bagsworld.co";
+        passInput.value = "BASTION-GHOST-2026";
+        errorMsg.style.display = "none";
+        showToast("👑 Credenciales de Admin Supremo cargadas.");
+      };
+    }
 
-    // 1-Click: Escenario 2 Calibolsos
-    document.getElementById("btn-quick-calibolsos").onclick = () => {
-      emailInput.value = "ventas@calibolsos.com";
-      passInput.value = "Cali2026*";
-      errorMsg.style.display = "none";
-      showToast("Credenciales de Calibolsos 2026 cargadas.");
-    };
+    // 1-Click: Panel 2 Bodega Matriz Proveedor
+    const btnQuickSupplier = document.getElementById("btn-quick-supplier");
+    if (btnQuickSupplier) {
+      btnQuickSupplier.onclick = () => {
+        emailInput.value = "bodega@bagsworld.co";
+        passInput.value = "Bodega2026*";
+        errorMsg.style.display = "none";
+        showToast("📦 Credenciales de Bodega Matriz cargadas.");
+      };
+    }
 
-    // 1-Click: Escenario 3 BAGS WORLD Colombia (SuperAdmin)
-    document.getElementById("btn-quick-bagsworld").onclick = () => {
-      emailInput.value = "admin@bagsworld.co";
-      passInput.value = "BagsMaster2026*";
-      errorMsg.style.display = "none";
-      showToast("Credenciales de Bodega Matriz cargadas.");
-    };
+    // 1-Click: Panel 3 Bag Partner BolsosCOL
+    const btnQuickPartner = document.getElementById("btn-quick-bolsoscol");
+    if (btnQuickPartner) {
+      btnQuickPartner.onclick = () => {
+        emailInput.value = "contacto@bolsoscol.com";
+        passInput.value = "BolsosCOL2026*";
+        errorMsg.style.display = "none";
+        showToast("👜 Credenciales de Bag Partner (BolsosCOL) cargadas.");
+      };
+    }
 
     // Rescate BolsosCOL
     document.getElementById("btn-rescue-bolsoscol").onclick = () => {
@@ -322,10 +337,12 @@
         showToast("¡Autenticación exitosa! Redirigiendo a tu panel...");
         
         setTimeout(() => {
-          if (result.isSuperAdmin) {
-            window.location.href = "index.html?view=supplier&store=store-bagsworld-admin&demo=true";
+          if (result.role === "super_admin") {
+            window.location.href = "index.html?view=directory&demo=admin";
+          } else if (result.role === "supplier") {
+            window.location.href = "index.html?view=supplier&demo=bodega";
           } else {
-            window.location.href = "index.html?view=store-admin&store=" + result.session.storeId;
+            window.location.href = "index.html?view=store-admin&demo=bolsoscol";
           }
         }, 600);
       } else {

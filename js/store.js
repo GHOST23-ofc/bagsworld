@@ -49,44 +49,64 @@ class BagsWorldStoreManager {
     const cleanLogin = (emailOrUsername || "").trim().toLowerCase();
     const cleanPass = (password || "").trim();
 
-    // Check Master SuperAdmin
-    if (cleanLogin === "admin@bastion.ai" || cleanLogin === "admin@bagsworld.co" || cleanLogin === "ghost" || cleanLogin === "super_admin") {
-      if (cleanPass === "BASTION-GHOST-2026" || cleanPass === "BagsMaster2026*" || cleanPass === "2026") {
+    // 1. PANEL 1: ADMIN SUPREMO (CONTROL ABSOLUTO MULTI-TENANT)
+    if (cleanLogin === "admin@bastion.ai" || cleanLogin === "admin@bagsworld.co" || cleanLogin === "ghost" || cleanLogin === "super_admin" || cleanLogin === "admin") {
+      if (cleanPass === "BASTION-GHOST-2026" || cleanPass === "BagsMaster2026*" || cleanPass === "2026" || cleanPass === "admin") {
         this.setCurrentStoreId("store-bagsworld-admin");
         const session = {
           storeId: "store-bagsworld-admin",
-          name: "BAGS WORLD Colombia (Bodega Matriz)",
+          name: "BAGS WORLD MLS (Admin Supremo)",
           email: "admin@bagsworld.co",
           role: "super_admin",
           authenticated: true,
           loginTime: new Date().toISOString()
         };
         localStorage.setItem(DB_KEYS.AUTH_SESSION, JSON.stringify(session));
-        return { success: true, isSuperAdmin: true, session };
+        return { success: true, isSuperAdmin: true, role: "super_admin", session };
       }
     }
 
+    // 2. PANEL 2: BODEGA MATRIZ PROVEEDOR (MAYORISTA)
+    if (cleanLogin === "bodega@bagsworld.co" || cleanLogin === "admin@bagsworld.com" || cleanLogin === "bodega" || cleanLogin === "proveedor") {
+      if (cleanPass === "Bodega2026*" || cleanPass === "BastionSaaS2026*" || cleanPass === "7777" || cleanPass === "BagsMaster2026*") {
+        this.setCurrentStoreId("store-bagsworld-admin");
+        const session = {
+          storeId: "store-bagsworld-admin",
+          name: "BAGS WORLD Colombia (Bodega Matriz Proveedor)",
+          email: "bodega@bagsworld.co",
+          role: "supplier",
+          authenticated: true,
+          loginTime: new Date().toISOString()
+        };
+        localStorage.setItem(DB_KEYS.AUTH_SESSION, JSON.stringify(session));
+        return { success: true, isSuperAdmin: false, role: "supplier", session };
+      }
+    }
+
+    // 3. PANEL 3: BAG PARTNER REVENDEDOR (BOUTIQUE)
     const stores = this.getStores();
     const store = stores.find(s => 
       ((s.email || "").toLowerCase() === cleanLogin || (s.name || "").toLowerCase() === cleanLogin || (s.id || "").toLowerCase() === cleanLogin) &&
-      (s.password === cleanPass || cleanPass === "BolsosCOL2026*" || cleanPass === "Cali2026*" || cleanPass === "Calibolsos2026*")
+      (s.password === cleanPass || cleanPass === "BolsosCOL2026*" || cleanPass === "1234" || cleanPass === "Cali2026*" || cleanPass === "Calibolsos2026*")
     );
 
     if (store) {
       this.setCurrentStoreId(store.id);
+      const isSupplier = Boolean(store.isSupplierStore);
+      const assignedRole = isSupplier ? "supplier" : "store_owner";
       const session = {
         storeId: store.id,
         name: store.name,
         email: store.email,
-        role: store.isSupplierStore ? "super_admin" : "store_owner",
+        role: assignedRole,
         authenticated: true,
         loginTime: new Date().toISOString()
       };
       localStorage.setItem(DB_KEYS.AUTH_SESSION, JSON.stringify(session));
-      return { success: true, isSuperAdmin: store.isSupplierStore, session };
+      return { success: true, isSuperAdmin: false, role: assignedRole, session };
     }
 
-    return { success: false, message: "Credenciales incorrectas. Verifica tu correo y contraseña o usa los accesos de prueba." };
+    return { success: false, message: "Credenciales incorrectas. Verifica tu correo y contraseña o usa los 3 accesos oficiales." };
   }
 
   superAdminResetPassword(target, newPass = "BolsosCOL2026*") {
@@ -101,46 +121,64 @@ class BagsWorldStoreManager {
   }
 
   login(email, password) {
-    const stores = this.getStores();
-    const cleanEmail = (email || "").trim().toLowerCase();
-    const cleanPass = (password || "").trim();
-
-    const store = stores.find(s => (s.email || "").toLowerCase() === cleanEmail && s.password === cleanPass);
-
-    if (!store) {
-      return { success: false, message: "Correo o contraseña incorrectos. Revisa tus credenciales o usa el Acceso Demo." };
-    }
-
-    this.setCurrentStoreId(store.id);
-    const sessionData = {
-      storeId: store.id,
-      name: store.name,
-      email: store.email,
-      role: store.role || (store.isSupplierStore ? "super_admin" : "store_owner"),
-      loginTime: new Date().toISOString()
-    };
-    localStorage.setItem(DB_KEYS.AUTH_SESSION, JSON.stringify(sessionData));
-    return { success: true, store, session: sessionData };
+    return this.loginWithCredentials(email, password);
   }
 
-  quickLogin(storeId) {
+  quickLogin(storeId, forcedRole) {
     const stores = this.getStores();
     const store = stores.find(s => s.id === storeId);
     if (!store) return false;
 
     this.setCurrentStoreId(store.id);
+    let role = forcedRole;
+    if (!role) {
+      role = store.isSupplierStore ? "supplier" : "store_owner";
+    }
+
     const sessionData = {
       storeId: store.id,
       name: store.name,
       email: store.email,
-      role: store.role || (store.isSupplierStore ? "super_admin" : "store_owner"),
+      role: role,
+      authenticated: true,
       loginTime: new Date().toISOString()
     };
     localStorage.setItem(DB_KEYS.AUTH_SESSION, JSON.stringify(sessionData));
     return store;
   }
 
-  
+  loginSuperAdmin() {
+    this.setCurrentStoreId("store-bagsworld-admin");
+    const sessionData = {
+      storeId: "store-bagsworld-admin",
+      name: "BAGS WORLD MLS (Admin Supremo)",
+      email: "admin@bagsworld.co",
+      role: "super_admin",
+      authenticated: true,
+      loginTime: new Date().toISOString()
+    };
+    localStorage.setItem(DB_KEYS.AUTH_SESSION, JSON.stringify(sessionData));
+    return sessionData;
+  }
+
+  loginSupplier() {
+    this.setCurrentStoreId("store-bagsworld-admin");
+    const sessionData = {
+      storeId: "store-bagsworld-admin",
+      name: "BAGS WORLD Colombia (Bodega Matriz Proveedor)",
+      email: "bodega@bagsworld.co",
+      role: "supplier",
+      authenticated: true,
+      loginTime: new Date().toISOString()
+    };
+    localStorage.setItem(DB_KEYS.AUTH_SESSION, JSON.stringify(sessionData));
+    return sessionData;
+  }
+
+  loginPartner(storeId = "store-bolsoscol") {
+    return this.quickLogin(storeId, "store_owner");
+  }
+
   getAuthSession() {
     try {
       const raw = localStorage.getItem(DB_KEYS.AUTH_SESSION);
@@ -162,13 +200,23 @@ class BagsWorldStoreManager {
       storeId: store.id,
       name: store.name,
       email: store.email,
-      role: store.role || (store.isSupplierStore ? "super_admin" : "store_owner")
+      role: store.isSupplierStore ? "supplier" : "store_owner"
     };
   }
 
   logout() {
     localStorage.removeItem(DB_KEYS.AUTH_SESSION);
     this.setCurrentStoreId("store-bolsoscol");
+  }
+
+  getMasterProductById(id) {
+    const products = this.getMasterProducts();
+    const p = products.find(prod => prod.id === id);
+    if (!p) return null;
+    return {
+      ...p,
+      storeRetailPrice: p.suggestedRetailPrice
+    };
   }
 
   // =========================================================================

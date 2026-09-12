@@ -250,13 +250,22 @@
               Personaliza tus precios de venta al público (PVP), activa referencias en tu vitrina y mantén tu información 100% protegida.
             </p>
           </div>
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <div class="theme-selector-wrapper" style="background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); display: inline-flex; align-items: center; gap: 8px;">
+              <span style="font-size: 11px; font-weight: 700; color: #cbd5e1;">🎨 Tema Boutique:</span>
+              <select id="partner-theme-select" class="theme-selector-select" aria-label="Cambiar Tema Visual Boutique">
+                <option value="obsidian-gold">👑 Obsidian Gold</option>
+                <option value="cyber-velvet">⚡ Cyber Velvet</option>
+                <option value="emerald-mirage">🌿 Emerald Mirage</option>
+              </select>
+            </div>
+            <button type="button" id="btn-partner-open-link-creator" class="btn-primary" style="font-weight: 700; font-size: 12px; background: #0f172a; border-color: #0f172a; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              <span>🔗 Crear Enlace Vitrina Boutique</span>
+            </button>
             <button class="btn-primary" id="btn-save-store-prices" style="background: var(--accent-emerald); border-color: var(--accent-emerald); font-weight: 800;">💾 Guardar Precios</button>
-            <button type="button" id="btn-partner-open-link-creator" class="btn-primary" style="font-weight: 700; font-size: 12px; background: #0f172a; border-color: #0f172a; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;"><span>🔗 Crear Enlace (Historias & Clientes)</span></button>
-            <button class="btn-secondary" id="btn-open-quote-modal-partner" style="border-color: rgba(227, 194, 116, 0.4); color: var(--primary-gold); font-weight: 700;">📝 Cotizador VIP Cliente</button>
-            <button class="btn-secondary" id="btn-open-store-reports" style="border-color: rgba(56, 189, 248, 0.4); color: var(--accent-blue); font-weight: 700;">📊 Mi Contabilidad & Excel</button>
-            <button class="btn-secondary" id="btn-open-store-settings">⚙️ Configurar Boutique</button>
-            <button class="btn-secondary" id="btn-export-store-backup" style="border-color: rgba(56, 189, 248, 0.4); color: var(--accent-blue);">💾 Respaldar Data Privada</button>
+            <button class="btn-secondary" id="btn-open-quote-modal-partner" style="border-color: rgba(227, 194, 116, 0.4); color: var(--primary-gold); font-weight: 700;">📝 Cotizador VIP</button>
+            <button class="btn-secondary" id="btn-open-store-reports" style="border-color: rgba(56, 189, 248, 0.4); color: var(--accent-blue); font-weight: 700;">📊 Mi Contabilidad</button>
+            <button class="btn-secondary" id="btn-open-store-settings">⚙️ Mi Perfil Boutique</button>
           </div>
         </div>
 
@@ -341,16 +350,27 @@
               <span class="category-tag" style="background: rgba(227, 194, 116, 0.15); color: var(--primary-gold); border-color: rgba(227, 194, 116, 0.35);">👑 Dueño del SaaS & Bodega Central</span>
               <span style="font-size: 11px; color: var(--text-muted);">BAGS WORLD Colombia · Control Maestro de Red</span>
             </div>
-            <h1 class="admin-heading-title">BAGS WORLD Colombia — SuperAdmin SaaS</h1>
+            <h1 class="admin-heading-title" id="supplier-panel-title">BAGS WORLD Colombia — Panel Bodega Matriz Proveedor</h1>
             <p style="font-size: 13px; color: var(--text-secondary);">
-              Supervisa las boutiques conectadas (BolsosCOL & Calibolsos2026), asístelas si olvidan sus claves, gestiona el catálogo y realiza backups maestros.
+              Inventario maestro de bolsos por colores, despacho de pedidos B2B, devoluciones y vitrina mayorista sincronizada.
             </p>
           </div>
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <div class="theme-selector-wrapper" style="background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); display: inline-flex; align-items: center; gap: 8px;">
+              <span style="font-size: 11px; font-weight: 700; color: #cbd5e1;">🎨 Tema Panel:</span>
+              <select id="supplier-theme-select" class="theme-selector-select" aria-label="Cambiar Tema Visual Bodega">
+                <option value="obsidian-gold">👑 Obsidian Gold</option>
+                <option value="cyber-velvet">⚡ Cyber Velvet</option>
+                <option value="emerald-mirage">🌿 Emerald Mirage</option>
+              </select>
+            </div>
+            <button type="button" id="btn-supplier-open-link-creator" class="btn-primary" style="font-weight: 700; font-size: 12px; background: #0f172a; border-color: #0f172a; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              <span>🔗 Crear Enlace Vitrina Bodega</span>
+            </button>
             <button class="btn-primary" id="btn-open-quote-modal" style="background: var(--primary-gold); color: #000; font-weight: 800;">📝 Cotizador VIP</button>
-            <button class="btn-primary" id="btn-open-supplier-reports" style="background: var(--accent-emerald); border-color: var(--accent-emerald); color: #fff; font-weight: 800;">📊 Centro Contable & Excel/PDF</button>
+            <button class="btn-primary" id="btn-open-supplier-reports" style="background: var(--accent-emerald); border-color: var(--accent-emerald); color: #fff; font-weight: 800;">📊 Centro Contable & Excel</button>
             <button class="btn-primary" id="btn-open-new-product-modal">➕ Cargar Nueva Referencia</button>
-            <button class="btn-secondary" id="btn-export-full-saas-backup" style="border-color: rgba(227, 194, 116, 0.4); color: var(--primary-gold);">📦 Exportar Master Backup SaaS</button>
+            <button class="btn-secondary" id="btn-supplier-open-profile">⚙️ Mi Perfil Bodega</button>
           </div>
         </div>
 
@@ -380,7 +400,7 @@
         </div>
 
         <!-- Panel de Soporte & Gestión de Clientes (Anti-Pérdida de Información) -->
-        <div class="table-container-card" style="margin-bottom: 24px; border: 1.5px solid rgba(227, 194, 116, 0.35); background: linear-gradient(180deg, rgba(227, 194, 116, 0.05) 0%, rgba(14, 17, 23, 0.95) 100%);">
+        <div class="table-container-card" id="saas-admin-crm-card" style="margin-bottom: 24px; border: 1.5px solid rgba(227, 194, 116, 0.35); background: linear-gradient(180deg, rgba(227, 194, 116, 0.05) 0%, rgba(14, 17, 23, 0.95) 100%);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
             <div>
               <h3 style="font-size: 16px; font-weight: 800; color: var(--primary-gold); display: flex; align-items: center; gap: 8px;">
@@ -578,7 +598,7 @@ Medidas 16 alto x 20 ancho"></textarea>
       <div class="main-wrapper" style="padding-top: 30px;">
         <div class="admin-top-bar">
           <div>
-            <span class="category-tag">📍 Ecosistema Mayorista BAGS WORLD</span>
+            <span class="category-tag" style="background: rgba(227, 194, 116, 0.2); color: var(--primary-gold); border-color: rgba(227, 194, 116, 0.4);">👑 PANEL 1 • ADMIN SUPREMO (CONTROL ABSOLUTO MLS)</span>
             <h1 class="admin-heading-title">Red de Boutiques & Simulación de Ganancias</h1>
             <p style="font-size: 13px; color: var(--text-secondary);">
               Descubre cómo <strong>BolsosCOL</strong> y <strong>Calibolsos 2026</strong> escalan sus ingresos mensuales sin inmovilizar capital en inventario.
@@ -1730,9 +1750,9 @@ Medidas 16 alto x 20 ancho"></textarea>
         <div class="form-group" style="margin-bottom: 14px;" id="link-store-selector-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <label class="form-label" style="font-size: 11.5px; font-weight: 800; margin: 0;">1. ¿De qué Vitrina de Cliente Final será el enlace?</label>
-            <span style="font-size: 10px; font-weight: 800; color: #15803d; background: #f0fdf4; padding: 2px 7px; border-radius: 999px; border: 1px solid #bbf7d0;">👁️ Vista Pública</span>
+            <span id="link-store-scope-badge" style="font-size: 10px; font-weight: 800; color: #15803d; background: #f0fdf4; padding: 2px 7px; border-radius: 999px; border: 1px solid #bbf7d0;">👁️ Vitrina Pública</span>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px;">
+          <div id="link-origin-buttons-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px;">
             <button type="button" class="btn-secondary link-origin-store-btn active" id="btn-link-store-bodega" data-store-id="store-bagsworld-admin" style="padding: 10px; text-align: left; border-radius: 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; border-color: var(--primary-gold); background: rgba(227, 194, 116, 0.15); color: #ffffff;">
               🏢 Vitrina Bodega Matriz
             </button>
