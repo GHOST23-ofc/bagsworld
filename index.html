@@ -62,17 +62,17 @@
         </div>
 
         <nav class="role-switcher-tabs" aria-label="Cambio de Rol" style="background: rgba(255,255,255,0.06); border-color: rgba(227, 194, 116, 0.25);">
-          <button class="role-tab-btn active" data-view="storefront" id="tab-storefront" style="color: #fff;">
-            🛒 Vitrina Pública
-          </button>
-          <button class="role-tab-btn" data-view="store-admin" id="tab-store-admin" style="color: #fff;">
-            🏪 Panel Mi Boutique
+          <button class="role-tab-btn" data-view="directory" id="tab-directory" style="color: #fff;">
+            👑 Panel 1: Admin Supremo
           </button>
           <button class="role-tab-btn" data-view="supplier" id="tab-supplier" style="color: #fff;">
-            📦 Panel Bodega Matriz
+            📦 Panel 2: Bodega Proveedor
           </button>
-          <button class="role-tab-btn" data-view="directory" id="tab-directory" style="color: #fff;">
-            📍 Directorio & ROI
+          <button class="role-tab-btn" data-view="store-admin" id="tab-store-admin" style="color: #fff;">
+            👜 Panel 3: Bag Partner
+          </button>
+          <button class="role-tab-btn active" data-view="storefront" id="tab-storefront" style="color: #fff;">
+            🛒 Vitrina Pública
           </button>
         </nav>
 
@@ -1746,28 +1746,28 @@ Medidas 16 alto x 20 ancho"></textarea>
       </div>
 
       <div style="padding: 18px 20px; max-height: 75vh; overflow-y: auto;">
-        <!-- Paso 1: ¿De qué Vitrina de Cliente Final será el enlace? -->
-        <div class="form-group" style="margin-bottom: 14px;" id="link-store-selector-group">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <label class="form-label" style="font-size: 11.5px; font-weight: 800; margin: 0;">1. ¿De qué Vitrina de Cliente Final será el enlace?</label>
-            <span id="link-store-scope-badge" style="font-size: 10px; font-weight: 800; color: #15803d; background: #f0fdf4; padding: 2px 7px; border-radius: 999px; border: 1px solid #bbf7d0;">👁️ Vitrina Pública</span>
+        <!-- Ficha de la Vitrina que Comparte (Aislada por Rol: BolsosCOL para Partner, BAGS WORLD para Bodega) -->
+        <div class="form-group" style="margin-bottom: 14px;" id="link-store-active-badge-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface-elevated); border: 1.5px solid var(--border-subtle); border-radius: 12px; padding: 10px 14px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div id="link-active-store-avatar" style="width: 38px; height: 38px; border-radius: 10px; background: rgba(227, 194, 116, 0.15); color: var(--primary-gold); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; border: 1px solid var(--border-subtle); flex-shrink: 0;">
+                BC
+              </div>
+              <div>
+                <div style="font-size: 10px; font-weight: 800; color: var(--accent-emerald); text-transform: uppercase;" id="link-active-store-type-badge">🟢 Vitrina Activa para tus Clientes</div>
+                <div id="link-active-store-name" style="font-size: 14px; font-weight: 900; color: #ffffff;">BolsosCOL (Boutique Partner)</div>
+              </div>
+            </div>
+            <span id="link-active-store-tag" style="font-size: 10.5px; font-weight: 800; color: var(--primary-gold); background: rgba(227, 194, 116, 0.12); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border-subtle);">Tu Tienda Online</span>
           </div>
-          <div id="link-origin-buttons-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px;">
-            <button type="button" class="btn-secondary link-origin-store-btn active" id="btn-link-store-bodega" data-store-id="store-bagsworld-admin" style="padding: 10px; text-align: left; border-radius: 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; border-color: var(--primary-gold); background: rgba(227, 194, 116, 0.15); color: #ffffff;">
-              🏢 Vitrina Bodega Matriz
-            </button>
-            <button type="button" class="btn-secondary link-origin-store-btn" id="btn-link-store-partner" data-store-id="store-bolsoscol" style="padding: 10px; text-align: left; border-radius: 10px; font-size: 11.5px; font-weight: 700; cursor: pointer;">
-              👜 Vitrina Boutique Partner (BolsosCOL)
-            </button>
-          </div>
-          <p style="font-size: 11px; color: var(--text-secondary); margin: 0; line-height: 1.35;" id="link-store-explainer">
-            👉 <strong>De Bodega a Revendedor:</strong> Muestra la vitrina pública de BAGS WORLD con fotos HD y WhatsApp directo.
+          <p style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 4px; line-height: 1.35;" id="link-active-store-explainer">
+            👉 Enlace directo a tu vitrina oficial con tus precios al detal y tu WhatsApp para cerrar ventas directas.
           </p>
         </div>
 
-        <!-- Paso 2: ¿Qué vas a compartir? -->
+        <!-- Paso 1: ¿Qué vas a compartir? -->
         <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" style="font-size: 11.5px; font-weight: 800;">2. ¿Qué deseas compartir?</label>
+          <label class="form-label" style="font-size: 11.5px; font-weight: 800;">1. ¿Qué deseas compartir?</label>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
             <button type="button" class="btn-secondary link-target-type-btn active" id="btn-link-type-store" data-type="store" style="padding: 10px; text-align: left; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border-color: var(--primary-gold); background: rgba(227, 194, 116, 0.15); color: #ffffff;">
               🏪 Toda la Vitrina / Catálogo
@@ -1782,9 +1782,9 @@ Medidas 16 alto x 20 ancho"></textarea>
           </div>
         </div>
 
-        <!-- Paso 3: Formato de Publicación -->
+        <!-- Paso 2: Formato de Publicación -->
         <div class="form-group" style="margin-bottom: 16px;">
-          <label class="form-label" style="font-size: 11.5px; font-weight: 800;">3. ¿Dónde lo vas a publicar?</label>
+          <label class="form-label" style="font-size: 11.5px; font-weight: 800;">2. ¿Dónde lo vas a publicar?</label>
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
             <button type="button" class="btn-secondary link-format-btn active" id="btn-link-fmt-story" data-format="story" style="font-size: 11px; padding: 8px 6px; font-weight: 700; text-align: center; cursor: pointer; border-color: var(--primary-red); background: rgba(230, 25, 46, 0.15); color: #ffffff;">
               📸 Historia Instagram

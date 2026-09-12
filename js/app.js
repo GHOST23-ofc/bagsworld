@@ -2819,6 +2819,7 @@ ${itemsText}
 
   // =========================================================================
   // SISTEMA DE 3 TEMAS INTERNOS (LLAMATIVOS, MODERNOS Y COOL)
+  // Sincronizado en Panel Bodega, Panel Partner y Panel Admin Supremo
   // =========================================================================
   const THEMES_CONFIG = {
     "obsidian-gold": { name: "Obsidian Gold", icon: "👑" },
@@ -2826,24 +2827,27 @@ ${itemsText}
     "emerald-mirage": { name: "Emerald Mirage", icon: "🌿" }
   };
 
+  const THEME_SELECT_IDS = [
+    "hud-theme-select-master",
+    "hud-theme-select-client",
+    "partner-theme-select",
+    "supplier-theme-select"
+  ];
+
   function initThemeSystem() {
     const savedTheme = localStorage.getItem("bagsworld_theme") || "obsidian-gold";
     applyTheme(savedTheme, false);
 
-    const selectMaster = document.getElementById("hud-theme-select-master");
-    const selectClient = document.getElementById("hud-theme-select-client");
-    const btnFloatingTheme = document.getElementById("btn-floating-theme");
-
-    if (selectMaster) {
-      selectMaster.value = savedTheme;
-      selectMaster.addEventListener("change", (e) => applyTheme(e.target.value, true));
-    }
-    if (selectClient) {
-      selectClient.value = savedTheme;
-      selectClient.addEventListener("change", (e) => applyTheme(e.target.value, true));
-    }
+    THEME_SELECT_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = savedTheme;
+        el.addEventListener("change", (e) => applyTheme(e.target.value, true));
+      }
+    });
 
     // Botón flotante que cicla entre los 3 temas
+    const btnFloatingTheme = document.getElementById("btn-floating-theme");
     if (btnFloatingTheme) {
       btnFloatingTheme.addEventListener("click", () => {
         const current = document.documentElement.getAttribute("data-theme") || "obsidian-gold";
@@ -2861,10 +2865,10 @@ ${itemsText}
     document.body.setAttribute("data-theme", themeId);
     localStorage.setItem("bagsworld_theme", themeId);
 
-    const selectMaster = document.getElementById("hud-theme-select-master");
-    const selectClient = document.getElementById("hud-theme-select-client");
-    if (selectMaster) selectMaster.value = themeId;
-    if (selectClient) selectClient.value = themeId;
+    THEME_SELECT_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = themeId;
+    });
 
     const iconEl = document.getElementById("floating-theme-icon");
     const labelEl = document.getElementById("floating-theme-label");
@@ -3090,84 +3094,105 @@ ${itemsText}
     const modal = document.getElementById("modal-link-creator");
     const btnClose = document.getElementById("btn-close-link-creator");
     const btnBodega = document.getElementById("btn-supplier-open-link-creator");
+    const btnSupplierBanner = document.getElementById("btn-supplier-banner-link-creator");
     const btnPartnerTop = document.getElementById("btn-partner-open-link-creator");
     const btnPartnerBanner = document.getElementById("btn-partner-banner-link-creator");
 
-    const btnStoreBodega = document.getElementById("btn-link-store-bodega");
-    const btnStorePartner = document.getElementById("btn-link-store-partner");
-    const storeExplainer = document.getElementById("link-store-explainer");
-    const buttonsGrid = document.getElementById("link-origin-buttons-grid");
-    const scopeBadge = document.getElementById("link-store-scope-badge");
+    const storeAvatar = document.getElementById("link-active-store-avatar");
+    const storeName = document.getElementById("link-active-store-name");
+    const storeTypeBadge = document.getElementById("link-active-store-type-badge");
+    const storeTag = document.getElementById("link-active-store-tag");
+    const storeExplainer = document.getElementById("link-active-store-explainer");
 
     const btnTypeStore = document.getElementById("btn-link-type-store");
     const btnTypeProduct = document.getElementById("btn-link-type-product");
     const prodSelectContainer = document.getElementById("link-product-select-container");
-    const prodSelect = document.getElementById("link-product-select");
+    const productSelect = document.getElementById("link-product-select");
 
     const btnFmtStory = document.getElementById("btn-link-fmt-story");
     const btnFmtChat = document.getElementById("btn-link-fmt-chat");
     const btnFmtBio = document.getElementById("btn-link-fmt-bio");
 
     const urlInput = document.getElementById("link-generated-url");
-    const copyLabel = document.getElementById("link-copy-label");
-    const suggestedCopy = document.getElementById("link-suggested-copy");
     const btnCopyLink = document.getElementById("btn-copy-generated-link");
     const btnCopyText = document.getElementById("btn-copy-story-text");
+    const copyLabel = document.getElementById("link-copy-label");
+    const suggestedCopy = document.getElementById("link-suggested-copy");
     const waShareBtn = document.getElementById("link-wa-share-btn");
     const btnPreview = document.getElementById("btn-open-generated-link-preview");
 
-    let targetStoreId = "store-bagsworld-admin"; // "store-bagsworld-admin" | "store-bolsoscol"
+    let targetStoreId = "store-bolsoscol"; // Por defecto BolsosCOL o según el panel activo
     let currentType = "store"; // "store" | "product"
     let currentFormat = "story"; // "story" | "chat" | "bio"
     let selectedProductId = null;
 
-    function populateProductSelect() {
-      if (!prodSelect) return;
-      const products = db.getMasterProducts();
-      prodSelect.innerHTML = products.map(p => {
-        return '<option value="' + p.id + '">' + p.name + ' ($' + db.formatCOP(p.suggestedRetailPrice) + ' COP)</option>';
-      }).join("");
-      if (products.length > 0 && !selectedProductId) {
-        selectedProductId = products[0].id;
+    function updateActiveStoreInfo() {
+      const session = db.getAuthSession();
+      const allStores = db.getStores();
+      let activeStore = null;
+
+      // =========================================================================
+      // AISLAMIENTO ESTRICTO: NI BODEGA PUEDE ENVIAR DE PARTNER NI AL REVÉS
+      // =========================================================================
+      if (session.role === "store_owner" || currentView === "store-admin") {
+        activeStore = allStores.find(s => !s.isSupplierStore) || allStores[1] || allStores[0];
+        targetStoreId = activeStore ? activeStore.id : "store-bolsoscol";
+      } else if (session.role === "supplier" || currentView === "supplier") {
+        activeStore = allStores.find(s => s.isSupplierStore) || allStores[0];
+        targetStoreId = activeStore ? activeStore.id : "store-bagsworld-admin";
+      } else {
+        // SuperAdmin: usa la tienda actualmente seleccionada
+        activeStore = db.getCurrentStore();
+        targetStoreId = activeStore ? activeStore.id : "store-bagsworld-admin";
+      }
+
+      if (storeAvatar && activeStore) {
+        if (activeStore.logo) {
+          storeAvatar.innerHTML = `<img src="${activeStore.logo}" alt="${activeStore.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;">`;
+        } else {
+          const initials = (activeStore.name || "BW").split(" ").filter(Boolean).map(w => w[0]).slice(0, 2).join("").toUpperCase();
+          storeAvatar.textContent = initials;
+        }
+        storeAvatar.style.background = activeStore.isSupplierStore ? "rgba(227, 194, 116, 0.15)" : "rgba(56, 189, 248, 0.15)";
+        storeAvatar.style.color = activeStore.isSupplierStore ? "var(--primary-gold)" : "var(--accent-blue)";
+        storeAvatar.style.borderColor = activeStore.isSupplierStore ? "rgba(227, 194, 116, 0.35)" : "rgba(56, 189, 248, 0.35)";
+      }
+
+      if (storeName && activeStore) {
+        storeName.textContent = activeStore.name;
+      }
+
+      if (storeTypeBadge && activeStore) {
+        storeTypeBadge.textContent = activeStore.isSupplierStore ? "🏢 Catálogo Oficial de Bodega" : "🟢 Vitrina Activa para tus Clientes";
+        storeTypeBadge.style.color = activeStore.isSupplierStore ? "var(--primary-gold)" : "var(--accent-emerald)";
+      }
+
+      if (storeTag && activeStore) {
+        storeTag.textContent = activeStore.isSupplierStore ? "Bodega Matriz" : "Tu Tienda Online";
+        storeTag.style.color = activeStore.isSupplierStore ? "var(--primary-gold)" : "var(--accent-blue)";
+        storeTag.style.background = activeStore.isSupplierStore ? "rgba(227, 194, 116, 0.12)" : "rgba(56, 189, 248, 0.12)";
+        storeTag.style.borderColor = activeStore.isSupplierStore ? "rgba(227, 194, 116, 0.3)" : "rgba(56, 189, 248, 0.3)";
+      }
+
+      if (storeExplainer && activeStore) {
+        storeExplainer.innerHTML = activeStore.isSupplierStore
+          ? `👉 Enlace directo a la vitrina oficial de <strong>${activeStore.name}</strong> para que tus clientes y revendedores consulten stock y pidan a tu WhatsApp.`
+          : `👉 Enlace directo a tu vitrina oficial de <strong>${activeStore.name}</strong> con tus precios al detal y tu WhatsApp para cerrar ventas directas.`;
       }
     }
 
-    function updateStoreButtons() {
-      const session = db.getAuthSession();
-      const currentStore = db.getCurrentStore();
-
-      if (targetStoreId === "store-bagsworld-admin") {
-        if (btnStoreBodega) {
-          btnStoreBodega.classList.add("active");
-          btnStoreBodega.style.background = "var(--primary-gold)";
-          btnStoreBodega.style.color = "#000";
-          btnStoreBodega.style.borderColor = "var(--primary-gold)";
-        }
-        if (btnStorePartner) {
-          btnStorePartner.classList.remove("active");
-          btnStorePartner.style.background = "var(--bg-surface-elevated)";
-          btnStorePartner.style.color = "#cbd5e1";
-          btnStorePartner.style.borderColor = "var(--border-subtle)";
-        }
-        if (storeExplainer) {
-          storeExplainer.innerHTML = "👉 <strong>Vitrina Oficial Bodega Matriz:</strong> El enlace va <strong>directamente a tu Vitrina de Bodega</strong> con fotos HD, catálogo completo y WhatsApp oficial.";
-        }
-      } else {
-        if (btnStorePartner) {
-          btnStorePartner.classList.add("active");
-          btnStorePartner.style.background = "var(--primary-gold)";
-          btnStorePartner.style.color = "#000";
-          btnStorePartner.style.borderColor = "var(--primary-gold)";
-        }
-        if (btnStoreBodega) {
-          btnStoreBodega.classList.remove("active");
-          btnStoreBodega.style.background = "var(--bg-surface-elevated)";
-          btnStoreBodega.style.color = "#cbd5e1";
-          btnStoreBodega.style.borderColor = "var(--border-subtle)";
-        }
-        if (storeExplainer) {
-          storeExplainer.innerHTML = "👉 <strong>Vitrina Boutique Partner (" + currentStore.name + "):</strong> El enlace va <strong>directamente a tu Vitrina de " + currentStore.name + "</strong> con tus precios de venta al detal y tu WhatsApp para cerrar la venta.";
-        }
+    function populateProductSelect() {
+      if (!productSelect) return;
+      const allStores = db.getStores();
+      const currentStore = allStores.find(s => s.id === targetStoreId) || db.getCurrentStore();
+      const prods = db.getStorefrontProducts(currentStore);
+      productSelect.innerHTML = prods.map(p => `
+        <option value="${p.id}" ${p.id === selectedProductId ? 'selected' : ''}>
+          ${p.name} — $${db.formatCOP(p.storeRetailPrice || p.suggestedRetailPrice)} COP
+        </option>
+      `).join("");
+      if (!selectedProductId && prods.length > 0) {
+        selectedProductId = prods[0].id;
       }
     }
 
@@ -3177,53 +3202,61 @@ ${itemsText}
       const origin = window.location.origin;
       const pathname = window.location.pathname;
       const isLocal = origin.includes("localhost") || origin.includes("127.0.0.1") || origin.startsWith("file:");
-      const baseUrl = isLocal ? "https://bagsworld.vercel.app" : (origin + pathname);
+      const baseUrl = isLocal ? "https://bagsworld.vercel.app" : `${origin}${pathname}`;
 
-      let finalUrl = baseUrl + "?store=" + encodeURIComponent(targetStoreId) + "&view=storefront";
+      // Enlace 100% seguro a la vitrina de cara al cliente final (sin credenciales admin)
+      let finalUrl = `${baseUrl}?store=${encodeURIComponent(targetStoreId)}&view=storefront`;
       let prodObj = null;
 
+      const allStores = db.getStores();
+      const currentStore = allStores.find(s => s.id === targetStoreId) || db.getCurrentStore();
+      const storeProducts = db.getStorefrontProducts(currentStore);
+
       if (currentType === "product") {
-        const prodId = selectedProductId || (prodSelect ? prodSelect.value : null);
-        if (prodId) {
-          prodObj = db.getMasterProducts().find(p => p.id === prodId) || db.getMasterProductById(prodId);
-          finalUrl += "&prod=" + encodeURIComponent(prodId);
+        if (!selectedProductId && productSelect) {
+          selectedProductId = productSelect.value;
+        }
+        prodObj = storeProducts.find(p => p.id === selectedProductId) || db.getMasterProductById(selectedProductId) || storeProducts[0];
+        if (prodObj) {
+          finalUrl += `&prod=${encodeURIComponent(prodObj.id)}`;
         }
       }
 
       urlInput.value = finalUrl;
 
+      // Generar copy persuasivo según la tienda activa y el formato
       let copyText = "";
-      const priceFmt = prodObj ? ("$" + db.formatCOP(prodObj.suggestedRetailPrice) + " COP") : "";
-      const isBodega = targetStoreId === "store-bagsworld-admin";
-      const storeName = isBodega ? "BAGS WORLD Colombia" : (db.getCurrentStore().name || "BolsosCOL");
+      const priceFmt = prodObj ? `$${db.formatCOP(prodObj.storeRetailPrice || prodObj.suggestedRetailPrice)} COP` : "";
+      const sName = currentStore ? currentStore.name : "nuestra tienda";
+      const isBodega = currentStore ? currentStore.isSupplierStore : false;
 
       if (currentFormat === "story") {
         if (copyLabel) copyLabel.textContent = "📸 Texto gancho sugerido para tu Historia / Sticker:";
         if (currentType === "product" && prodObj) {
           copyText = isBodega
-            ? "👜 " + prodObj.name + " disponible en bodega central con despacho inmediato. Toca el sticker para ver fotos HD y pedir contraentrega 👇"
-            : "👜 " + prodObj.name + " disponible (" + priceFmt + "). Toca el sticker para ver fotos en HD, colores y pedir contraentrega 👇";
+            ? `👜 ${prodObj.name} disponible en bodega central con despacho inmediato. Toca el sticker para ver fotos HD y pedir contraentrega 👇`
+            : `👜 ${prodObj.name} disponible en ${sName} (${priceFmt}). Toca el sticker para ver fotos en HD, colores y pedir contraentrega 👇`;
         } else {
           copyText = isBodega
-            ? "👜 Catálogo oficial de marroquinería abierto para pedidos. Toca el sticker para ver modelos y stock en tiempo real 👇"
-            : "👜 ¡Nueva colección de carteras y bolsos disponible en " + storeName + "! Toca el sticker para ver el catálogo en vivo y pedir contraentrega a tu casa 👇";
+            ? `👜 Catálogo oficial de marroquinería abierto para pedidos. Toca el sticker para ver modelos y stock en tiempo real 👇`
+            : `👜 ¡Nueva colección de carteras y bolsos disponible en ${sName}! Toca el sticker para ver fotos HD y pedir contraentrega a tu casa 👇`;
         }
       } else if (currentFormat === "chat") {
-        if (copyLabel) copyLabel.textContent = "💬 Mensaje listo para enviar por WhatsApp a la clienta:";
+        if (copyLabel) copyLabel.textContent = "💬 Mensaje listo para enviar por WhatsApp al cliente:";
         if (currentType === "product" && prodObj) {
           copyText = isBodega
-            ? "¡Hola! 👋 Te comparto las fotos oficiales y disponibilidad del " + prodObj.name + " en Bodega Matriz. Puedes pedir directamente aquí: " + finalUrl
-            : "¡Hola hermosa! 👋 Te comparto las fotos oficiales y detalles del " + prodObj.name + " (" + priceFmt + "). Puedes ver fotos de todos los colores y pedir aquí: " + finalUrl;
+            ? `¡Hola! 👋 Te comparto las fotos oficiales y disponibilidad del ${prodObj.name} en Bodega Matriz. Puedes pedir directamente aquí: ${finalUrl}`
+            : `¡Hola hermosa! 👋 Te comparto las fotos oficiales y detalles del ${prodObj.name} (${priceFmt}) en ${sName}. Puedes ver todos los colores y pedir aquí: ${finalUrl}`;
         } else {
           copyText = isBodega
-            ? "¡Hola! 👋 Te comparto nuestra vitrina oficial en vivo de BAGS WORLD Colombia. Puedes revisar stock disponible y fotos HD aquí: " + finalUrl
-            : "¡Hola! 👋 Mira todo nuestro catálogo de bolsos y carteras en " + storeName + " con fotos reales y consulta de colores en tiempo real aquí: " + finalUrl;
+            ? `¡Hola! 👋 Te comparto nuestra vitrina oficial en vivo de BAGS WORLD Colombia. Puedes revisar stock disponible y fotos HD aquí: ${finalUrl}`
+            : `¡Hola! 👋 Mira todo nuestro catálogo de bolsos y carteras en ${sName} con fotos reales y consulta de colores en tiempo real aquí: ${finalUrl}`;
         }
       } else if (currentFormat === "bio") {
         if (copyLabel) copyLabel.textContent = "🌐 Texto recomendado para tu Biografía de Instagram / TikTok:";
         copyText = isBodega
-          ? "👜 Bodega Mayorista de Bolsos & Marroquinería | Catálogo en Vivo & Despachos Nacionales 👇\n" + finalUrl
-          : "👜 Carteras & Bolsos de Lujo en " + storeName + " ✨ Pago Contraentrega en Colombia. Mira el Catálogo Oficial aquí 👇\n" + finalUrl;
+          ? `👜 Bodega Mayorista de Bolsos & Marroquinería | Catálogo en Vivo & Despachos Nacionales 👇\n${finalUrl}`
+          : `👜 Carteras & Bolsos de Lujo en ${sName} ✨ Pago Contraentrega en Colombia. Mira el Catálogo Oficial aquí 👇\n${finalUrl}`;
       }
 
       suggestedCopy.textContent = copyText;
@@ -3238,135 +3271,22 @@ ${itemsText}
       }
     }
 
-    function openModalForStore(storeId) {
-      populateProductSelect();
-      const session = db.getAuthSession();
-      const currentStore = db.getCurrentStore();
-
-      // =========================================================================
-      // AISLAMIENTO ESTRICTO DE ROLES EN EL CREADOR DE HISTORIAS & VITRINAS
-      // Ni bodega puede enviar de partner, ni partner de bodega
-      // =========================================================================
-      if (session.authenticated && session.role === "supplier") {
-        // Modo Bodega Matriz: estrictamente su vitrina de bodega
-        targetStoreId = "store-bagsworld-admin";
-        if (btnStoreBodega) {
-          btnStoreBodega.style.display = "block";
-          btnStoreBodega.disabled = true;
-          btnStoreBodega.innerHTML = "🏢 Vitrina Oficial Bodega Matriz (Tu Tienda Directa)";
-        }
-        if (btnStorePartner) {
-          btnStorePartner.style.display = "none";
-        }
-        if (buttonsGrid) {
-          buttonsGrid.style.gridTemplateColumns = "1fr";
-        }
-        if (scopeBadge) {
-          scopeBadge.textContent = "🔒 Modo Exclusivo Bodega";
-          scopeBadge.style.background = "rgba(230, 25, 46, 0.15)";
-          scopeBadge.style.color = "var(--primary-red)";
-          scopeBadge.style.borderColor = "var(--primary-red)";
-        }
-      } else if (session.authenticated && session.role === "store_owner") {
-        // Modo Bag Partner Revendedor: estrictamente su vitrina de partner
-        targetStoreId = currentStore.id || "store-bolsoscol";
-        if (btnStorePartner) {
-          btnStorePartner.style.display = "block";
-          btnStorePartner.disabled = true;
-          btnStorePartner.innerHTML = "👜 Vitrina Tu Boutique (" + currentStore.name + ")";
-        }
-        if (btnStoreBodega) {
-          btnStoreBodega.style.display = "none";
-        }
-        if (buttonsGrid) {
-          buttonsGrid.style.gridTemplateColumns = "1fr";
-        }
-        if (scopeBadge) {
-          scopeBadge.textContent = "🔒 Modo Exclusivo Partner";
-          scopeBadge.style.background = "rgba(56, 189, 248, 0.15)";
-          scopeBadge.style.color = "var(--accent-blue)";
-          scopeBadge.style.borderColor = "var(--accent-blue)";
-        }
-      } else {
-        // SuperAdmin: control absoluto, puede alternar entre Bodega y Partner
-        targetStoreId = storeId || (currentStore.isSupplierStore ? "store-bagsworld-admin" : currentStore.id);
-        if (btnStoreBodega) {
-          btnStoreBodega.style.display = "block";
-          btnStoreBodega.disabled = false;
-          btnStoreBodega.innerHTML = "🏢 Vitrina Bodega Matriz";
-        }
-        if (btnStorePartner) {
-          btnStorePartner.style.display = "block";
-          btnStorePartner.disabled = false;
-          btnStorePartner.innerHTML = "👜 Vitrina Boutique Partner (" + currentStore.name + ")";
-        }
-        if (buttonsGrid) {
-          buttonsGrid.style.gridTemplateColumns = "1fr 1fr";
-        }
-        if (scopeBadge) {
-          scopeBadge.textContent = "👑 Control Absoluto Admin";
-          scopeBadge.style.background = "rgba(227, 194, 116, 0.15)";
-          scopeBadge.style.color = "var(--primary-gold)";
-          scopeBadge.style.borderColor = "var(--primary-gold)";
-        }
-      }
-
-      updateStoreButtons();
-      generateLinkAndCopy();
-      modal?.classList.add("open");
-    }
-
-    if (btnStoreBodega) {
-      btnStoreBodega.onclick = () => {
-        const session = db.getAuthSession();
-        if (session.authenticated && session.role === "store_owner") return; // Bloqueado para Partner
-        targetStoreId = "store-bagsworld-admin";
-        updateStoreButtons();
-        generateLinkAndCopy();
-      };
-    }
-
-    if (btnStorePartner) {
-      btnStorePartner.onclick = () => {
-        const session = db.getAuthSession();
-        if (session.authenticated && session.role === "supplier") return; // Bloqueado para Bodega
-        const currentStore = db.getCurrentStore();
-        targetStoreId = currentStore.id !== "store-bagsworld-admin" ? currentStore.id : "store-bolsoscol";
-        updateStoreButtons();
-        generateLinkAndCopy();
-      };
-    }
-
     function selectType(type) {
       currentType = type;
-      if (type === "store") {
-        btnTypeStore?.classList.add("active");
-        btnTypeProduct?.classList.remove("active");
-        if (btnTypeStore) {
-          btnTypeStore.style.background = "var(--primary-gold)";
-          btnTypeStore.style.color = "#000";
-          btnTypeStore.style.borderColor = "var(--primary-gold)";
-        }
-        if (btnTypeProduct) {
-          btnTypeProduct.style.background = "var(--bg-surface-elevated)";
-          btnTypeProduct.style.color = "#cbd5e1";
-          btnTypeProduct.style.borderColor = "var(--border-subtle)";
-        }
-        if (prodSelectContainer) prodSelectContainer.style.display = "none";
-      } else {
-        btnTypeProduct?.classList.add("active");
-        btnTypeStore?.classList.remove("active");
-        if (btnTypeProduct) {
-          btnTypeProduct.style.background = "var(--primary-gold)";
-          btnTypeProduct.style.color = "#000";
-          btnTypeProduct.style.borderColor = "var(--primary-gold)";
-        }
-        if (btnTypeStore) {
-          btnTypeStore.style.background = "var(--bg-surface-elevated)";
-          btnTypeStore.style.color = "#cbd5e1";
-          btnTypeStore.style.borderColor = "var(--border-subtle)";
-        }
-        if (prodSelectContainer) prodSelectContainer.style.display = "block";
+      if (btnTypeStore) {
+        btnTypeStore.classList.toggle("active", type === "store");
+        btnTypeStore.style.background = type === "store" ? "var(--primary-gold)" : "";
+        btnTypeStore.style.color = type === "store" ? "#000" : "";
+        btnTypeStore.style.borderColor = type === "store" ? "var(--primary-gold)" : "";
+      }
+      if (btnTypeProduct) {
+        btnTypeProduct.classList.toggle("active", type === "product");
+        btnTypeProduct.style.background = type === "product" ? "var(--primary-gold)" : "";
+        btnTypeProduct.style.color = type === "product" ? "#000" : "";
+        btnTypeProduct.style.borderColor = type === "product" ? "var(--primary-gold)" : "";
+      }
+      if (prodSelectContainer) {
+        prodSelectContainer.style.display = type === "product" ? "block" : "none";
       }
       generateLinkAndCopy();
     }
@@ -3374,9 +3294,9 @@ ${itemsText}
     if (btnTypeStore) btnTypeStore.onclick = () => selectType("store");
     if (btnTypeProduct) btnTypeProduct.onclick = () => selectType("product");
 
-    if (prodSelect) {
-      prodSelect.onchange = () => {
-        selectedProductId = prodSelect.value;
+    if (productSelect) {
+      productSelect.onchange = (e) => {
+        selectedProductId = e.target.value;
         generateLinkAndCopy();
       };
     }
@@ -3384,19 +3304,20 @@ ${itemsText}
     function selectFormat(fmt) {
       currentFormat = fmt;
       [btnFmtStory, btnFmtChat, btnFmtBio].forEach(b => {
-        if (!b) return;
-        b.classList.remove("active");
-        b.style.background = "var(--bg-surface-elevated)";
-        b.style.color = "#cbd5e1";
-        b.style.borderColor = "var(--border-subtle)";
+        if (b) {
+          const isSelected = b.dataset.format === fmt;
+          b.classList.toggle("active", isSelected);
+          if (isSelected) {
+            b.style.background = fmt === "story" ? "rgba(230, 25, 46, 0.25)" : (fmt === "chat" ? "rgba(16, 185, 129, 0.25)" : "rgba(56, 189, 248, 0.25)");
+            b.style.borderColor = fmt === "story" ? "var(--primary-red)" : (fmt === "chat" ? "var(--accent-emerald)" : "var(--accent-blue)");
+            b.style.color = "#ffffff";
+          } else {
+            b.style.background = "";
+            b.style.borderColor = "";
+            b.style.color = "";
+          }
+        }
       });
-      const activeBtn = fmt === "story" ? btnFmtStory : (fmt === "chat" ? btnFmtChat : btnFmtBio);
-      if (activeBtn) {
-        activeBtn.classList.add("active");
-        activeBtn.style.background = "rgba(230, 25, 46, 0.15)";
-        activeBtn.style.color = "#ffffff";
-        activeBtn.style.borderColor = "var(--primary-red)";
-      }
       generateLinkAndCopy();
     }
 
@@ -3409,7 +3330,7 @@ ${itemsText}
         if (urlInput) {
           navigator.clipboard.writeText(urlInput.value).then(() => {
             btnCopyLink.textContent = "✅ ¡Enlace Copiado!";
-            showToast("📋 Enlace de vitrina pública copiado.");
+            showToast("📋 Enlace de vitrina pública copiado al portapapeles.");
             setTimeout(() => { btnCopyLink.textContent = "📋 Copiar Enlace"; }, 2500);
           });
         }
@@ -3421,27 +3342,50 @@ ${itemsText}
         if (suggestedCopy) {
           navigator.clipboard.writeText(suggestedCopy.textContent.trim()).then(() => {
             btnCopyText.textContent = "✅ ¡Copiado!";
-            showToast("📋 Texto persuasivo copiado.");
+            showToast("📋 Texto persuasivo copiado al portapapeles.");
             setTimeout(() => { btnCopyText.textContent = "📋 Copiar Texto"; }, 2500);
           });
         }
       };
     }
 
-    if (btnBodega) btnBodega.onclick = () => openModalForStore("store-bagsworld-admin");
-    if (btnPartnerTop) btnPartnerTop.onclick = () => openModalForStore("store-bolsoscol");
-    if (btnPartnerBanner) btnPartnerBanner.onclick = () => openModalForStore("store-bolsoscol");
+    // Exponer función global para abrir desde catálogo o tabla
+    window.openBagsLinkCreator = (prodId) => {
+      updateActiveStoreInfo();
+      populateProductSelect();
+
+      if (prodId) {
+        currentType = "product";
+        selectedProductId = prodId;
+        if (productSelect) productSelect.value = prodId;
+        selectType("product");
+      } else {
+        currentType = "store";
+        selectType("store");
+      }
+
+      selectFormat("story");
+      generateLinkAndCopy();
+      modal?.classList.add("open");
+    };
+
+    // Disparadores en panel de administración (Partner y Bodega)
+    [btnBodega, btnSupplierBanner, btnPartnerTop, btnPartnerBanner].forEach(btn => {
+      if (btn) {
+        btn.onclick = () => {
+          updateActiveStoreInfo();
+          populateProductSelect();
+          generateLinkAndCopy();
+          modal?.classList.add("open");
+        };
+      }
+    });
+
     if (btnClose) btnClose.onclick = () => modal?.classList.remove("open");
 
-    modal.onclick = (e) => {
-      if (e.target === modal) modal.classList.remove("open");
-    };
-
-    // Exponer globalmente para abrir con producto
-    window.openBagsLinkCreator = (prodId) => {
-      selectedProductId = prodId;
-      selectType("product");
-      if (prodSelect) prodSelect.value = prodId;
-      openModalForStore();
-    };
+    if (modal) {
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.classList.remove("open");
+      };
+    }
   }
