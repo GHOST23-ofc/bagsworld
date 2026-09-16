@@ -1949,3 +1949,372 @@ input:checked + .slider-round:before {
     font-size: 9px;
   }
 }
+
+
+/* =========================================================================
+   ÚNICO BOTÓN MAESTRO PARA ALTERNAR TEMAS VISUALES
+   ========================================================================= */
+.btn-floating-theme-switch {
+  position: fixed;
+  bottom: 84px;
+  right: 20px;
+  z-index: 9980;
+  background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  user-select: none;
+}
+.btn-floating-theme-switch:hover {
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.7), 0 0 16px var(--primary-gold-glow);
+}
+
+
+/* ==========================================================================
+   OPTIMIZACIONES ULTRA-FLUIDAS PARA DISPOSITIVOS MÓVILES (BAGS WORLD MLS)
+   ADAPTADO DE SNEAKER WORLD MLS CON APLICACIÓN A MARROQUINERÍA Y TEMAS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* Layout Containers */
+  .main-wrapper {
+    padding: 12px 10px;
+  }
+
+  /* HUD Superior Supremo (Admin) */
+  .top-demo-hud {
+    padding: 8px 12px;
+  }
+  .hud-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .hud-brand {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .role-switcher-tabs {
+    overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 3px;
+    display: flex;
+    gap: 4px;
+  }
+  .role-switcher-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .role-tab-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* Client Auth HUD (Bodega / Boutique Partner) */
+  .client-auth-hud {
+    padding: 8px 12px;
+  }
+  .client-auth-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .client-auth-container > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+  .btn-action-sm {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  /* Storefront Header */
+  .store-header {
+    padding: 14px 12px;
+  }
+  .store-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .store-info-left {
+    gap: 12px;
+  }
+  .store-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+  }
+  #storefront-name {
+    font-size: 18px;
+    line-height: 1.25;
+  }
+  #storefront-tagline {
+    font-size: 11px;
+  }
+  .store-header-cta {
+    width: 100%;
+  }
+  .btn-wa-header {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  /* Barra de Categorías / Filtros - Deslizamiento suave */
+  .category-filter-bar {
+    gap: 6px;
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    overflow-x: auto;
+    display: flex;
+  }
+  .category-filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .category-chip-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* Card de Filtros */
+  .filter-card {
+    padding: 14px 12px;
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+  }
+  .search-inputs-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  /* Dashboard de Bodega y Partner */
+  .admin-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .admin-heading-title {
+    font-size: 18px;
+  }
+  .admin-top-bar > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .admin-top-bar > div:last-child button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Stats Cards Grid */
+  .stats-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stats-cards-grid .stat-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+  .stat-card {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+  .stat-icon-badge {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+  .stat-number {
+    font-size: 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  /* Tablas de Datos con Scroll Horizontal Limpio */
+  .table-container-card {
+    padding: 14px 10px;
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+  }
+  .table-responsive-box {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    border-radius: 8px;
+  }
+  .mls-data-table {
+    min-width: 600px;
+  }
+  .mls-data-table th,
+  .mls-data-table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  /* Modales en Móvil - Bottom Sheet Nativo */
+  .modal-backdrop {
+    padding: 10px;
+    align-items: flex-end;
+  }
+  .modal-dialog {
+    max-height: 88vh;
+    padding: 18px 14px;
+    border-radius: 20px 20px 14px 14px;
+    width: 100%;
+    max-width: 100%;
+    transform: translateY(20px);
+    overflow-y: auto;
+  }
+  .modal-backdrop.open .modal-dialog {
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   GRILLA DE 2 COLUMNAS PARA SMARTPHONES (MAX 640PX)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .products-grid-layout {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .product-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  }
+  .product-card:hover {
+    transform: none; /* Evita parpadeos táctiles en móvil */
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  }
+
+  .product-image-box {
+    height: 148px;
+  }
+
+  .product-badges {
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    gap: 4px;
+  }
+  .category-tag {
+    font-size: 8px;
+    padding: 2px 5px;
+  }
+  .sku-tag {
+    font-size: 8px;
+    padding: 2px 4px;
+  }
+  .campaign-badge-pill {
+    display: none;
+  }
+
+  .product-body {
+    padding: 10px 8px;
+  }
+
+  .product-name {
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 32px;
+  }
+
+  .product-desc {
+    display: none; /* Oculto en grilla móvil; visible en modal de detalle */
+  }
+
+  .product-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .price-box {
+    width: 100%;
+  }
+  .price-label {
+    font-size: 8px !important;
+    letter-spacing: 0.2px;
+  }
+  .price-val {
+    font-size: 14px !important;
+    font-weight: 900;
+  }
+
+  .btn-card-wa {
+    width: 100%;
+    justify-content: center;
+    padding: 7px 8px;
+    font-size: 11px;
+    border-radius: 8px;
+  }
+
+  /* Ajuste de Botón Flotante de Tema en Móvil */
+  .btn-floating-theme-switch {
+    bottom: 58px;
+    right: 12px;
+    font-size: 10.5px;
+    padding: 6px 12px;
+  }
+
+  /* Carrito flotante en móvil */
+  .floating-cart-bar {
+    bottom: 58px;
+    left: 12px;
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .stats-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .products-grid-layout {
+    gap: 6px !important;
+  }
+  .product-image-box {
+    height: 130px;
+  }
+}
+

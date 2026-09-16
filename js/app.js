@@ -137,11 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. Bodega Matriz Proveedor (?demo=bodega | ?demo=proveedor | ?role=supplier)
     // 3. Bag Partner Revendedor (?demo=bolsoscol | ?demo=partner | ?role=store_owner)
     // =========================================================================
-    if (paramDemo === "admin" || paramDemo === "super_admin" || paramDemo === "bagsworld" || paramDemo === "ghost" || paramRole === "super_admin") {
+    if (paramDemo === "admin" || paramDemo === "super_admin" || paramDemo === "bagsworld" || paramDemo === "ghost" || paramRole === "super_admin" || paramView === "directory") {
       db.loginSuperAdmin();
-    } else if (paramDemo === "bodega" || paramDemo === "proveedor" || paramRole === "supplier") {
+    } else if (paramDemo === "bodega" || paramDemo === "proveedor" || paramRole === "supplier" || paramView === "supplier") {
       db.loginSupplier();
-    } else if (paramDemo === "bolsoscol" || paramDemo === "partner" || paramDemo === "revendedor" || paramRole === "store_owner") {
+    } else if (paramDemo === "bolsoscol" || paramDemo === "partner" || paramDemo === "revendedor" || paramRole === "store_owner" || paramView === "store-admin") {
       db.loginPartner("store-bolsoscol");
     } else if (paramDemo === "calibolsos") {
       db.loginPartner("store-calibolsos");
@@ -1609,6 +1609,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    
+    // Botón directo para Ver Vitrina Digital en Bodega
+    const btnSupplierStorefront = document.getElementById("btn-supplier-view-storefront");
+    if (btnSupplierStorefront) {
+      btnSupplierStorefront.onclick = () => {
+        const supStore = db.getStores().find(s => s.isSupplierStore) || db.getCurrentStore();
+        window.open(`?store=${encodeURIComponent(supStore?.id || "store-bagsworld-admin")}&view=storefront`, "_blank");
+      };
+    }
+  
     const btnSupplierProfile = document.getElementById("btn-supplier-open-profile");
     if (btnSupplierProfile) {
       btnSupplierProfile.addEventListener("click", () => {
@@ -2818,8 +2828,7 @@ ${itemsText}
 
 
   // =========================================================================
-  // SISTEMA DE 3 TEMAS INTERNOS (LLAMATIVOS, MODERNOS Y COOL)
-  // Sincronizado en Panel Bodega, Panel Partner y Panel Admin Supremo
+  // SISTEMA DE 3 TEMAS INTERNOS - CONTROLADO DESDE UN ÚNICO BOTÓN MAESTRO
   // =========================================================================
   const THEMES_CONFIG = {
     "obsidian-gold": { name: "Obsidian Gold", icon: "👑" },
@@ -2827,29 +2836,14 @@ ${itemsText}
     "emerald-mirage": { name: "Emerald Mirage", icon: "🌿" }
   };
 
-  const THEME_SELECT_IDS = [
-    "hud-theme-select-master",
-    "hud-theme-select-client",
-    "partner-theme-select",
-    "supplier-theme-select"
-  ];
-
   function initThemeSystem() {
     const savedTheme = localStorage.getItem("bagsworld_theme") || "obsidian-gold";
     applyTheme(savedTheme, false);
 
-    THEME_SELECT_IDS.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.value = savedTheme;
-        el.addEventListener("change", (e) => applyTheme(e.target.value, true));
-      }
-    });
-
-    // Botón flotante que cicla entre los 3 temas
-    const btnFloatingTheme = document.getElementById("btn-floating-theme");
-    if (btnFloatingTheme) {
-      btnFloatingTheme.addEventListener("click", () => {
+    // Único botón maestro flotante para alternar entre los 3 temas visuales
+    const btnTheme = document.getElementById("btn-floating-theme");
+    if (btnTheme) {
+      btnTheme.addEventListener("click", () => {
         const current = document.documentElement.getAttribute("data-theme") || "obsidian-gold";
         const keys = Object.keys(THEMES_CONFIG);
         const nextIdx = (keys.indexOf(current) + 1) % keys.length;
@@ -2864,11 +2858,6 @@ ${itemsText}
     document.documentElement.setAttribute("data-theme", themeId);
     document.body.setAttribute("data-theme", themeId);
     localStorage.setItem("bagsworld_theme", themeId);
-
-    THEME_SELECT_IDS.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = themeId;
-    });
 
     const iconEl = document.getElementById("floating-theme-icon");
     const labelEl = document.getElementById("floating-theme-label");

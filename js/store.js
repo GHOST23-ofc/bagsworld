@@ -348,13 +348,16 @@ class BagsWorldStoreManager {
   }
 
   getStorefrontProducts(store) {
+    const activeStore = store || this.getCurrentStore();
     const master = this.getMasterProducts();
-    const storeProducts = store && Array.isArray(store.products) ? store.products : [];
+    const storeProducts = activeStore && Array.isArray(activeStore.products) ? activeStore.products : [];
 
     return master.filter(mp => mp.active !== false).map(mp => {
       const sp = storeProducts.find(p => p.productId === mp.id);
       const isActive = sp ? sp.active !== false : true;
-      const customPrice = sp && sp.customPrice ? sp.customPrice : mp.suggestedRetailPrice;
+      const customPrice = (activeStore && activeStore.isSupplierStore)
+        ? mp.suggestedRetailPrice
+        : ((sp && sp.customPrice) ? sp.customPrice : mp.suggestedRetailPrice);
 
       return {
         ...mp,
@@ -585,11 +588,27 @@ ${modeText}
     const prod = products.find(p => p.id === productId);
     if (!prod) return null;
 
-    // Si prod.active es undefined o true, pasa a false. Si es false, pasa a true.
     prod.active = prod.active === false ? true : false;
     prod.updatedAt = new Date().toISOString().split("T")[0];
-
     this.saveMasterProducts(products);
+
+    // Sincronizar estado activo en todas las tiendas asociadas de la red
+    const stores = this.getStores();
+    stores.forEach(st => {
+      let sp = (st.products || []).find(item => item.productId === productId);
+      if (sp) {
+        sp.active = prod.active;
+      } else {
+        if (!st.products) st.products = [];
+        st.products.push({
+          productId,
+          customPrice: prod.suggestedRetailPrice,
+          active: prod.active
+        });
+      }
+    });
+    this.saveStores(stores);
+
     return prod.active;
   }
 
@@ -870,4 +889,8 @@ const db = new BagsWorldStoreManager();
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { BagsWorldStoreManager, db };
+}
+
+if (typeof window !== "undefined") {
+  window.db = db;
 }

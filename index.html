@@ -84,14 +84,7 @@
             </select>
           </div>
           
-          <div class="theme-selector-wrapper" style="margin-right: 4px;">
-            <span style="font-size: 11px;">🎨</span>
-            <select id="hud-theme-select-master" class="theme-selector-select" aria-label="Cambiar Tema Visual">
-              <option value="obsidian-gold">👑 Obsidian Gold</option>
-              <option value="cyber-velvet">⚡ Cyber Velvet</option>
-              <option value="emerald-mirage">🌿 Emerald Mirage</option>
-            </select>
-          </div>
+          
           <button id="btn-open-privacy-modal" class="btn-action-sm" title="Configurar Cuenta & Seguridad" style="font-size: 11px; padding: 5px 12px; font-weight: 700; background: rgba(227, 194, 116, 0.15); color: var(--primary-gold); border-color: rgba(227, 194, 116, 0.4);">⚙️ Seguridad</button>
           <button id="btn-logout-hud" class="btn-action-sm" style="font-size: 11px; padding: 5px 12px; text-decoration: none; font-weight: 700; color: #f87171; border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.1);">🚪 Salir</button>
           <button id="btn-reset-demo" class="btn-reset-demo" title="Restaurar datos oficiales">↺ Reset</button>
@@ -111,14 +104,7 @@
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
           
-          <div class="theme-selector-wrapper">
-            <span style="font-size: 11px;">🎨</span>
-            <select id="hud-theme-select-client" class="theme-selector-select" aria-label="Cambiar Tema Visual">
-              <option value="obsidian-gold">👑 Obsidian Gold</option>
-              <option value="cyber-velvet">⚡ Cyber Velvet</option>
-              <option value="emerald-mirage">🌿 Emerald Mirage</option>
-            </select>
-          </div>
+          
           <button id="btn-client-toggle-view" class="btn-action-sm" style="font-size: 11px; padding: 6px 14px; font-weight: 700;">🛒 Ver Mi Vitrina</button>
           <button id="btn-client-open-account" class="btn-action-sm" style="font-size: 11px; padding: 6px 14px; font-weight: 700;">⚙️ Mi Cuenta</button>
           <button id="btn-client-logout" class="btn-action-sm" style="font-size: 11px; padding: 6px 14px; font-weight: 700; color: #f87171; border-color: rgba(239,68,68,0.3);">🚪 Cerrar Sesión</button>
@@ -251,14 +237,7 @@
             </p>
           </div>
           <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-            <div class="theme-selector-wrapper" style="background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); display: inline-flex; align-items: center; gap: 8px;">
-              <span style="font-size: 11px; font-weight: 700; color: #cbd5e1;">🎨 Tema Boutique:</span>
-              <select id="partner-theme-select" class="theme-selector-select" aria-label="Cambiar Tema Visual Boutique">
-                <option value="obsidian-gold">👑 Obsidian Gold</option>
-                <option value="cyber-velvet">⚡ Cyber Velvet</option>
-                <option value="emerald-mirage">🌿 Emerald Mirage</option>
-              </select>
-            </div>
+            
             <button type="button" id="btn-partner-open-link-creator" class="btn-primary" style="font-weight: 700; font-size: 12px; background: #0f172a; border-color: #0f172a; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
               <span>🔗 Crear Enlace Vitrina Boutique</span>
             </button>
@@ -356,16 +335,12 @@
             </p>
           </div>
           <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-            <div class="theme-selector-wrapper" style="background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); display: inline-flex; align-items: center; gap: 8px;">
-              <span style="font-size: 11px; font-weight: 700; color: #cbd5e1;">🎨 Tema Panel:</span>
-              <select id="supplier-theme-select" class="theme-selector-select" aria-label="Cambiar Tema Visual Bodega">
-                <option value="obsidian-gold">👑 Obsidian Gold</option>
-                <option value="cyber-velvet">⚡ Cyber Velvet</option>
-                <option value="emerald-mirage">🌿 Emerald Mirage</option>
-              </select>
-            </div>
+            
             <button type="button" id="btn-supplier-open-link-creator" class="btn-primary" style="font-weight: 700; font-size: 12px; background: #0f172a; border-color: #0f172a; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
               <span>🔗 Crear Enlace Vitrina Bodega</span>
+            </button>
+            <button type="button" id="btn-supplier-view-storefront" class="btn-secondary" style="border-color: rgba(227, 194, 116, 0.4); color: var(--primary-gold); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              👁️ Ver Vitrina Digital
             </button>
             <button class="btn-primary" id="btn-open-quote-modal" style="background: var(--primary-gold); color: #000; font-weight: 800;">📝 Cotizador VIP</button>
             <button class="btn-primary" id="btn-open-supplier-reports" style="background: var(--accent-emerald); border-color: var(--accent-emerald); color: #fff; font-weight: 800;">📊 Centro Contable & Excel</button>
@@ -1550,16 +1525,26 @@ Medidas 16 alto x 20 ancho"></textarea>
   </div>
 
     <!-- FOOTER MULTI-TENANT CON ACCESO A PORTAL DE CLIENTES -->
-  <footer style="text-align: center; padding: 36px 20px 80px; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border-subtle); margin-top: 60px; background: var(--bg-surface);">
-    <div style="max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-      <div>
-        <strong style="color: #ffffff;">BAGS WORLD MLS</strong> — Red Matriz de Bolsos, Carteras & Marroquinería Colombia
+  <footer style="text-align: center; padding: 36px 20px 110px; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border-subtle); margin-top: 60px; background: var(--bg-surface);">
+      <div style="max-width: 1240px; margin: 0 auto; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+          <strong style="color: var(--text-primary);">BAGS WORLD MLS</strong> — Red Matriz de Marroquinería CO.
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center; font-size: 11px; flex-wrap: wrap; justify-content: center;">
+          <a href="?view=supplier&demo=bodega" style="color: var(--text-muted); text-decoration: none; border-bottom: 1px dashed var(--border-subtle); padding-bottom: 2px;">
+            📦 Acceso Bodega Proveedor
+          </a>
+          <span>•</span>
+          <a href="?view=store-admin&demo=bolsoscol" style="color: var(--text-muted); text-decoration: none; border-bottom: 1px dashed var(--border-subtle); padding-bottom: 2px;">
+            👜 Acceso Bag Partner
+          </a>
+          <span>•</span>
+          <a href="admin.html" style="color: var(--primary-gold); text-decoration: none; font-weight: 700;">
+            👑 Acceso Admin Supremo
+          </a>
+        </div>
       </div>
-      <div style="display: flex; gap: 12px; align-items: center;">
-        <span style="color: var(--text-muted); font-size: 11px;">Plataforma Oficial B2B & Catálogo Sincronizado</span>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
   
   <!-- BOTÓN FLOTANTE: SELECTOR RÁPIDO DE TEMA (COOL & LLAMATIVO) -->
